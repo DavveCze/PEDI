@@ -18,7 +18,7 @@ export const QuestionGridNav: React.FC<QuestionGridNavProps> = ({
     <div className="w-full max-w-4xl mx-auto mt-6 bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-xs">
       <div className="flex items-center justify-between gap-4 mb-4">
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-          Rychlá navigace v testu (Položky 1–46)
+          Rychlá navigace v testu (Položky 1–{questions.length})
         </h3>
         <div className="flex items-center gap-4 text-xs text-slate-500">
           <div className="flex items-center gap-1.5">
@@ -54,9 +54,9 @@ export const QuestionGridNav: React.FC<QuestionGridNavProps> = ({
                   ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
-              title={`Položka ${q.id}: ${q.theme} (${isAnswered ? 'Zodpovězeno' : 'Nezodpovězeno'})`}
+              title={`Položka ${idx + 1} (Otázka Q${q.id}): ${q.theme} [${q.domain}] (${isAnswered ? 'Zodpovězeno' : 'Nezodpovězeno'})`}
             >
-              {q.id}
+              {idx + 1}
             </button>
           );
         })}

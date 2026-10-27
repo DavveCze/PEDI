@@ -5,9 +5,17 @@ export type QuestionType =
   | 'secure_unsecure'
   | 'grid_choice';
 
+export type DiagnosticDomain =
+  | 'Mediální obsah'
+  | 'Ověřování informací'
+  | 'Bezpečnost a soukromí'
+  | 'Digitální nástroje'
+  | 'Kritické využití AI';
+
 export interface Question {
   id: number;
   module: 'Mediální gramotnost' | 'IT Fitness';
+  domain: DiagnosticDomain;
   theme: string;
   prompt: string;
   scenario?: string;
@@ -20,6 +28,8 @@ export interface Question {
   images: string[];
 }
 
+export type QuizMode = 'standard_20' | 'random_20' | 'full_46';
+
 export interface RespondentInfo {
   respondentId: string;
   grade: string;
@@ -28,40 +38,28 @@ export interface RespondentInfo {
   age?: number;
   consentGiven: boolean;
   startTime: string;
+  quizMode: QuizMode;
+}
+
+export interface DomainScore {
+  score: number;
+  max: number;
+  percentage: number;
 }
 
 export interface ScoreBreakdown {
   totalScore: number;
   maxScore: number;
   percentage: number;
-  mediaGrammarScore: number;
-  mediaGrammarMax: number;
-  itFitnessScore: number;
-  itFitnessMax: number;
+  domainScores: Record<DiagnosticDomain, DomainScore>;
 }
 
 export interface QuizSubmission {
   respondent: RespondentInfo;
+  questionIds: number[];
   answers: Record<number, string | string[]>;
   score: ScoreBreakdown;
   timeSpentSeconds: number;
   completedAt: string;
   encryptedToken: string;
-}
-
-export interface AggregatedStats {
-  totalSubmissions: number;
-  averageScore: number;
-  averagePercentage: number;
-  medianScore: number;
-  mediaAvgPercentage: number;
-  itAvgPercentage: number;
-  questionStats: {
-    id: number;
-    theme: string;
-    module: string;
-    correctCount: number;
-    totalCount: number;
-    successRate: number;
-  }[];
 }

@@ -1,10 +1,7 @@
-import { QuizSubmission, ScoreBreakdown } from '../types/quiz';
+import { QuizSubmission, ScoreBreakdown, DiagnosticDomain } from '../types/quiz';
 
 const PEDI_SALT = 'PEDI_DIAG_SECRET_SALT_2026_V1';
 
-/**
- * Jednoduchý deterministický HMAC / Hash podpis pro integritu a prevenci falšování
- */
 async function generateSignature(dataString: string): Promise<string> {
   const encoder = new TextEncoder();
   const keyData = encoder.encode(PEDI_SALT);
@@ -20,12 +17,11 @@ async function generateSignature(dataString: string): Promise<string> {
     );
     const signatureBuffer = await window.crypto.subtle.sign('HMAC', cryptoKey, data);
     const hashArray = Array.from(new Uint8Array(signatureBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).slice(0, 12).join('');
+    return hashArray.map((b) => b.toString(16).padStart(2, '0')).slice(0, 12).join('');
   } catch {
-    // Fallback jednoduchý hash pokud subtle crypto není dostupné
     let hash = 0;
     for (let i = 0; i < dataString.length; i++) {
-      hash = ((hash << 5) - hash) + dataString.charCodeAt(i);
+      hash = (hash << 5) - hash + dataString.charCodeAt(i);
       hash |= 0;
     }
     return Math.abs(hash).toString(16).padStart(8, '0');
@@ -33,29 +29,31 @@ async function generateSignature(dataString: string): Promise<string> {
 }
 
 /**
- * Bezpečně zakóduje a zašifruje výsledek testu do přenosného řetězce (tokenu)
+ * Bezpečně zakóduje výsledek testu do přenosného řetězce (tokenu)
  */
 export async function encodeQuizResult(submission: {
   respondent: QuizSubmission['respondent'];
+  questionIds: number[];
   answers: QuizSubmission['answers'];
   score: ScoreBreakdown;
   timeSpentSeconds: number;
   completedAt: string;
 }): Promise<string> {
   const payload = {
-    v: 1,
+    v: 2,
     rid: submission.respondent.respondentId,
     grd: submission.respondent.grade,
     grp: submission.respondent.group || 'Standard',
     gen: submission.respondent.gender || 'unspecified',
     age: submission.respondent.age || 19,
+    mode: submission.respondent.quizMode,
+    qids: submission.questionIds,
     ts: submission.completedAt,
     dur: submission.timeSpentSeconds,
     sc: submission.score.totalScore,
     max: submission.score.maxScore,
     pct: submission.score.percentage,
-    mSc: submission.score.mediaGrammarScore,
-    iSc: submission.score.itFitnessScore,
+    doms: submission.score.domainScores,
     ans: submission.answers,
   };
 
@@ -102,9 +100,6 @@ export async function decodeQuizResult(token: string): Promise<{
   }
 }
 
-/**
- * Generuje anonymní ID studenta (např. PEDI-4A-8K3N)
- */
 export function generateAnonymousId(grade: string = '4'): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let rand = '';
@@ -115,11 +110,16 @@ export function generateAnonymousId(grade: string = '4'): string {
   return `PEDI-${cleanGrade}-${rand}`;
 }
 
-/**
- * Exportuje dekódovaná data z pole výsledků do CSV formátu pro seminární práci
- */
 export function exportResultsToCsv(submissions: any[]): string {
   if (!submissions || submissions.length === 0) return '';
+
+  const domains: DiagnosticDomain[] = [
+    'Mediální obsah',
+    'Ověřování informací',
+    'Bezpečnost a soukromí',
+    'Digitální nástroje',
+    'Kritické využití AI',
+  ];
 
   const headers = [
     'Respondent_ID',
@@ -127,23 +127,34 @@ export function exportResultsToCsv(submissions: any[]): string {
     'Skupina',
     'Pohlavi',
     'Vek',
+    'Rezim_Testu',
+    'Pocet_Polozek',
     'Datum_Cas',
     'Cas_sekundy',
     'Celkove_Skore',
     'Max_Skore',
     'Uspesnost_Procent',
-    'Medialni_Gramotnost',
-    'IT_Fitness',
+    ...domains.map((d) => `Skore_${d.replace(/\s+/g, '_')}`),
     ...Array.from({ length: 46 }, (_, i) => `Q${i + 1}`),
   ];
 
-  const rows = submissions.map(sub => {
+  const rows = submissions.map((sub) => {
     const qAnswers = Array.from({ length: 46 }, (_, i) => {
-      const ans = sub.ans?.[i + 1];
+      const qId = i + 1;
+      const ans = sub.ans?.[qId];
+      if (ans === undefined) {
+        return '""';
+      }
       if (Array.isArray(ans)) {
         return `"${ans.join('; ')}"`;
       }
-      return `"${ans ?? ''}"`;
+      return `"${ans}"`;
+    });
+
+    const domainScores = domains.map((d) => {
+      const score = sub.doms?.[d]?.score ?? sub.doms?.[d] ?? '';
+      const max = sub.doms?.[d]?.max ?? '';
+      return max ? `"${score}/${max}"` : `"${score}"`;
     });
 
     return [
@@ -152,17 +163,17 @@ export function exportResultsToCsv(submissions: any[]): string {
       `"${sub.grp || ''}"`,
       `"${sub.gen || ''}"`,
       sub.age || '',
+      `"${sub.mode || 'standard_20'}"`,
+      sub.qids?.length || sub.max || 20,
       `"${sub.ts || ''}"`,
       sub.dur || 0,
       sub.sc || 0,
-      sub.max || 46,
+      sub.max || 20,
       sub.pct || 0,
-      sub.mSc || 0,
-      sub.iSc || 0,
+      ...domainScores,
       ...qAnswers,
     ].join(',');
   });
 
-  // UTF-8 BOM pro bezchybné otevření v českém Microsoft Excelu
   return '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
 }

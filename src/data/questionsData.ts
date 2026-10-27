@@ -1,4 +1,22 @@
-import { Question } from '../types/quiz';
+import { Question, DiagnosticDomain } from '../types/quiz';
+
+export const DOMAIN_QUOTAS: Record<DiagnosticDomain, number> = {
+  'Mediální obsah': 5,
+  'Ověřování informací': 4,
+  'Bezpečnost a soukromí': 5,
+  'Digitální nástroje': 3,
+  'Kritické využití AI': 3,
+};
+
+export const DOMAIN_DESCRIPTIONS: Record<DiagnosticDomain, string> = {
+  'Mediální obsah': 'Rozpoznání zavádějícího titulku, reklamy, manipulace obrazem a základních typů mediálního sdělení.',
+  'Ověřování informací': 'Práce se zdrojem, kontrola důvěryhodnosti, hledání souvislostí a rozpoznání neověřeného tvrzení.',
+  'Bezpečnost a soukromí': 'Bezpečné přihlašování, phishing, citlivé údaje, veřejné nabíjení a bezpečné sdílení souborů.',
+  'Digitální nástroje': 'Volba vhodného nástroje, práce se souborem, sdílení a základní orientace v digitálním prostředí.',
+  'Kritické využití AI': 'Ověření výstupu AI, rozpoznání chybné informace a uvědomění limitů automaticky vytvořeného obsahu.',
+};
+
+export const DEFAULT_20_QUESTION_IDS: number[] = [1, 2, 4, 8, 15, 3, 7, 9, 10, 6, 19, 29, 31, 34, 35, 40, 44, 13, 20, 22];
 
 export const QUESTIONS_DATA: Question[] = [
   {
@@ -18,7 +36,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Vnímání vizuální manipulace a nelogičností v komerční fotografii (chyba v anatomii / odrazu v poli 3).",
     "images": [
       "./images/img-000.png"
-    ]
+    ],
+    "domain": "Mediální obsah"
   },
   {
     "id": 2,
@@ -36,7 +55,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Rozpoznání formátu PR a tiskových zpráv od nezávislé žurnalistiky.",
     "images": [
       "./images/img-002.png"
-    ]
+    ],
+    "domain": "Mediální obsah"
   },
   {
     "id": 3,
@@ -53,7 +73,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Ověřování rukojeti (@AndrejBabiis s dvěma i), data vytvoření a stylu komunikace.",
     "images": [
       "./images/img-003.png"
-    ]
+    ],
+    "domain": "Ověřování informací"
   },
   {
     "id": 4,
@@ -71,7 +92,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Kritická práce s grafickou vizualizací kvantitativních dat (oříznutá osa Y zveličující marginální rozdíly).",
     "images": [
       "./images/img-004.png"
-    ]
+    ],
+    "domain": "Mediální obsah"
   },
   {
     "id": 5,
@@ -88,7 +110,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Ověřování historických zdrojů a atribuce výroků (citát 2 zmiňuje notebooky a moderní technologie).",
     "images": [
       "./images/img-005.png"
-    ]
+    ],
+    "domain": "Ověřování informací"
   },
   {
     "id": 6,
@@ -104,7 +127,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "použití dvou kroků při přihlašování, například heslo a kód zaslaný na mobilní telefon",
     "explanation": "Znalost principu dvoufaktorové autentizace (2FA/MFA).",
-    "images": []
+    "images": [],
+    "domain": "Bezpečnost a soukromí"
   },
   {
     "id": 7,
@@ -125,7 +149,8 @@ export const QUESTIONS_DATA: Question[] = [
       "./images/img-008.png",
       "./images/img-009.png",
       "./images/img-006.png"
-    ]
+    ],
+    "domain": "Ověřování informací"
   },
   {
     "id": 8,
@@ -143,7 +168,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Rozpoznání manipulativních titulků cílících na zvědavost a emoce se zamlčenou klíčovou informací.",
     "images": [
       "./images/img-014.png"
-    ]
+    ],
+    "domain": "Mediální obsah"
   },
   {
     "id": 9,
@@ -164,7 +190,8 @@ export const QUESTIONS_DATA: Question[] = [
     "images": [
       "./images/img-015.png",
       "./images/img-016.png"
-    ]
+    ],
+    "domain": "Ověřování informací"
   },
   {
     "id": 10,
@@ -182,7 +209,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Ověření pravosti webového rozhraní a detekce grafického podvrhu.",
     "images": [
       "./images/img-017.png"
-    ]
+    ],
+    "domain": "Ověřování informací"
   },
   {
     "id": 11,
@@ -197,7 +225,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "Upřednostňovat informace, které podporují jeho vlastní názor.",
     "explanation": "Znalost klíčového kognitivního zkreslení ovlivňujícího interpretaci zpráv.",
-    "images": []
+    "images": [],
+    "domain": "Ověřování informací"
   },
   {
     "id": 12,
@@ -212,7 +241,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "Poplatky, které platí domácnosti a firmy, jež vlastní televizní nebo rozhlasové přijímače.",
     "explanation": "Chápání principu financování a nezávislosti veřejnoprávních médií.",
-    "images": []
+    "images": [],
+    "domain": "Mediální obsah"
   },
   {
     "id": 13,
@@ -231,7 +261,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Identifikace artefaktů generativních modelů (Midjourney/DALL-E) a ověření zprávy.",
     "images": [
       "./images/img-018.png"
-    ]
+    ],
+    "domain": "Kritické využití AI"
   },
   {
     "id": 14,
@@ -247,7 +278,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "Forma skryté reklamy, kdy je inzerovaný produkt umístěn do uměleckého díla.",
     "explanation": "Porozumění komerčním a marketingovým formátům v audiovizuální tvorbě.",
-    "images": []
+    "images": [],
+    "domain": "Mediální obsah"
   },
   {
     "id": 15,
@@ -265,7 +297,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Povědomí o etických a zákonných povinnostech označovat sponzorovaný obsah influencery.",
     "images": [
       "./images/img-019.png"
-    ]
+    ],
+    "domain": "Mediální obsah"
   },
   {
     "id": 16,
@@ -281,7 +314,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "Meta (dříve Facebook)",
     "explanation": "Znalost mediálního vlastnictví a technologických konglomerátů.",
-    "images": []
+    "images": [],
+    "domain": "Mediální obsah"
   },
   {
     "id": 17,
@@ -300,7 +334,8 @@ export const QUESTIONS_DATA: Question[] = [
       "ČT musí přispívat k právnímu povědomí obyvatel ČR a rozvíjet jejich kulturní identitu."
     ],
     "explanation": "Znalost zákona o ČT a role veřejnoprávního vysílání v demokratické společnosti.",
-    "images": []
+    "images": [],
+    "domain": "Mediální obsah"
   },
   {
     "id": 18,
@@ -315,7 +350,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "Produkce velmi věrohodně vypadajících videí, obrázků nebo zvukových souborů, které jsou vydávány za reálné.",
     "explanation": "Povědomí o rizicích syntetických audiovizuálních médií.",
-    "images": []
+    "images": [],
+    "domain": "Kritické využití AI"
   },
   {
     "id": 19,
@@ -333,7 +369,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Ochrana před sociálním inženýrstvím a podvodnými zprávami šířenými přes messengery.",
     "images": [
       "./images/img-023.png"
-    ]
+    ],
+    "domain": "Bezpečnost a soukromí"
   },
   {
     "id": 20,
@@ -350,7 +387,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Kritické posouzení AI generované schématické mapy vůči reálnému jízdnímu řádu.",
     "images": [
       "./images/img-024.png"
-    ]
+    ],
+    "domain": "Kritické využití AI"
   },
   {
     "id": 21,
@@ -367,7 +405,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Ověření úplnosti dat (spoj vede až do Polska, zobrazen je jen fragment).",
     "images": [
       "./images/img-024.png"
-    ]
+    ],
+    "domain": "Kritické využití AI"
   },
   {
     "id": 22,
@@ -384,7 +423,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Detekce prostorových chyb a halucinací generativních modelů.",
     "images": [
       "./images/img-024.png"
-    ]
+    ],
+    "domain": "Kritické využití AI"
   },
   {
     "id": 23,
@@ -403,7 +443,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Schopnost dohledat evropské fact-checkingové sítě (Adria Digital Media Observatory).",
     "images": [
       "./images/img-027.png"
-    ]
+    ],
+    "domain": "Ověřování informací"
   },
   {
     "id": 24,
@@ -420,7 +461,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "NEPRAVDA",
     "explanation": "Rozlišení počtu zapojených obcí (7 200) od počtu hotspotů (>90 000).",
-    "images": []
+    "images": [],
+    "domain": "Ověřování informací"
   },
   {
     "id": 25,
@@ -437,7 +479,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "PRAVDA",
     "explanation": "Přesné vyhledávání v dokumentových metadatech na portálu EU.",
-    "images": []
+    "images": [],
+    "domain": "Ověřování informací"
   },
   {
     "id": 26,
@@ -454,7 +497,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "PRAVDA",
     "explanation": "Čtení s porozuměním z oficiálního webu instituce.",
-    "images": []
+    "images": [],
+    "domain": "Ověřování informací"
   },
   {
     "id": 27,
@@ -469,7 +513,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "NEZABEZPEČÍ",
     "explanation": "Rozlišení vizuálního maskování a skutečného odstranění dat (data v buňkách stále existují).",
-    "images": []
+    "images": [],
+    "domain": "Bezpečnost a soukromí"
   },
   {
     "id": 28,
@@ -484,7 +529,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "NEZABEZPEČÍ",
     "explanation": "Povědomí o zachování textové vrstvy v needitovatelných formátech (PDF text lze zkopírovat).",
-    "images": []
+    "images": [],
+    "domain": "Bezpečnost a soukromí"
   },
   {
     "id": 29,
@@ -499,7 +545,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "ZABEZPEČÍ",
     "explanation": "Korektní sanitizace a anonymizace dat před distribucí třetím stranám.",
-    "images": []
+    "images": [],
+    "domain": "Bezpečnost a soukromí"
   },
   {
     "id": 30,
@@ -518,7 +565,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Rozpoznání techniky scareware (falešné vyskakovací okno imitující systémový antivirus).",
     "images": [
       "./images/img-029.png"
-    ]
+    ],
+    "domain": "Bezpečnost a soukromí"
   },
   {
     "id": 31,
@@ -537,7 +585,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "Přístupový klíč je odolnější vůči phishingu než heslo.",
     "explanation": "Znalost moderní bezheslové autentizace dle FIDO2/WebAuthn standardu.",
-    "images": []
+    "images": [],
+    "domain": "Bezpečnost a soukromí"
   },
   {
     "id": 32,
@@ -554,7 +603,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "NEPRAVDA",
     "explanation": "Pochopení mechaniky přenosu dat po USB pinech nezávisle na fyzické přítomnosti.",
-    "images": []
+    "images": [],
+    "domain": "Bezpečnost a soukromí"
   },
   {
     "id": 33,
@@ -569,7 +619,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "NEPRAVDA",
     "explanation": "Kritický pohled na hardwarová a přepěťová rizika veřejné infrastruktury.",
-    "images": []
+    "images": [],
+    "domain": "Bezpečnost a soukromí"
   },
   {
     "id": 34,
@@ -584,7 +635,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "PRAVDA",
     "explanation": "Znalost kyberbezpečnostních rizik veřejných dobíjecích terminálů.",
-    "images": []
+    "images": [],
+    "domain": "Bezpečnost a soukromí"
   },
   {
     "id": 35,
@@ -599,7 +651,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "PRAVDA",
     "explanation": "Typografická a strukturální analýza dokumentu v textovém editoru.",
-    "images": []
+    "images": [],
+    "domain": "Digitální nástroje"
   },
   {
     "id": 36,
@@ -614,7 +667,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "NEPRAVDA",
     "explanation": "Rozlišení systémového seznamu od ručně vepsaných symbolů/znaků.",
-    "images": []
+    "images": [],
+    "domain": "Digitální nástroje"
   },
   {
     "id": 37,
@@ -629,7 +683,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "NEPRAVDA",
     "explanation": "Ověření formátování odstavců v tabulce.",
-    "images": []
+    "images": [],
+    "domain": "Digitální nástroje"
   },
   {
     "id": 38,
@@ -646,7 +701,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "na třetím",
     "explanation": "Filtrování a víceúrovňové řazení v tabulkovém procesoru.",
-    "images": []
+    "images": [],
+    "domain": "Digitální nástroje"
   },
   {
     "id": 39,
@@ -663,7 +719,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "31",
     "explanation": "Agregace a počítání záznamů splňujících kritérium (funkce COUNTIF).",
-    "images": []
+    "images": [],
+    "domain": "Digitální nástroje"
   },
   {
     "id": 40,
@@ -680,7 +737,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Porozumění kolaborativní editaci v reálném čase.",
     "images": [
       "./images/img-038.png"
-    ]
+    ],
+    "domain": "Digitální nástroje"
   },
   {
     "id": 41,
@@ -697,7 +755,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Řízení přístupových práv v cloudových úložištích.",
     "images": [
       "./images/img-038.png"
-    ]
+    ],
+    "domain": "Digitální nástroje"
   },
   {
     "id": 42,
@@ -714,7 +773,8 @@ export const QUESTIONS_DATA: Question[] = [
     "explanation": "Rozdíl mezi statickým exportem v příloze a cloudovým verzováním.",
     "images": [
       "./images/img-038.png"
-    ]
+    ],
+    "domain": "Digitální nástroje"
   },
   {
     "id": 43,
@@ -731,7 +791,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "sciencemuseum",
     "explanation": "Vyhledání a porovnání metrik na veřejných sociálních profilech.",
-    "images": []
+    "images": [],
+    "domain": "Digitální nástroje"
   },
   {
     "id": 44,
@@ -748,7 +809,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "NEPRAVDA",
     "explanation": "Identifikace autora úpravy ve sledování revizí.",
-    "images": []
+    "images": [],
+    "domain": "Digitální nástroje"
   },
   {
     "id": 45,
@@ -765,7 +827,8 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "NEPRAVDA",
     "explanation": "Audit komentářových vláken v revizním nástroji.",
-    "images": []
+    "images": [],
+    "domain": "Digitální nástroje"
   },
   {
     "id": 46,
@@ -782,6 +845,39 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "PRAVDA",
     "explanation": "Analýza časových razítek v revizích dokumentu.",
-    "images": []
+    "images": [],
+    "domain": "Digitální nástroje"
   }
 ];
+
+/**
+ * Získá standardní reprezentativní sadu 20 položek
+ */
+export function getStandard20Questions(): Question[] {
+  return DEFAULT_20_QUESTION_IDS.map((id) => QUESTIONS_DATA.find((q) => q.id === id)!);
+}
+
+/**
+ * Vygeneruje randomizovanou sadu 20 položek přesně v kvótách:
+ * 5 z Mediálního obsahu, 4 z Ověřování informací, 5 z Bezpečnosti a soukromí, 3 z Digitálních nástrojů, 3 z Kritického AI
+ */
+export function getRandomized20Questions(): Question[] {
+  const result: Question[] = [];
+
+  const domains: DiagnosticDomain[] = [
+    'Mediální obsah',
+    'Ověřování informací',
+    'Bezpečnost a soukromí',
+    'Digitální nástroje',
+    'Kritické využití AI',
+  ];
+
+  for (const domain of domains) {
+    const quota = DOMAIN_QUOTAS[domain];
+    const pool = QUESTIONS_DATA.filter((q) => q.domain === domain);
+    const shuffled = [...pool].sort(() => 0.5 - Math.random());
+    result.push(...shuffled.slice(0, quota));
+  }
+
+  return result;
+}

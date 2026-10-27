@@ -1,12 +1,13 @@
 import React from 'react';
-import { GraduationCap, Clock, Award, BarChart3, Database } from 'lucide-react';
+import { GraduationCap, Clock, Award, Database } from 'lucide-react';
+import { DiagnosticDomain } from '../types/quiz';
 
 interface QuizHeaderProps {
   currentIndex: number;
   totalQuestions: number;
   answeredCount: number;
-  activeModule: 'All' | 'Mediální gramotnost' | 'IT Fitness';
-  onSelectModule: (module: 'All' | 'Mediální gramotnost' | 'IT Fitness') => void;
+  activeDomain: 'All' | DiagnosticDomain;
+  onSelectDomain: (domain: 'All' | DiagnosticDomain) => void;
   secondsElapsed: number;
   onOpenResearchHub: () => void;
 }
@@ -15,8 +16,8 @@ export const QuizHeader: React.FC<QuizHeaderProps> = ({
   currentIndex,
   totalQuestions,
   answeredCount,
-  activeModule,
-  onSelectModule,
+  activeDomain,
+  onSelectDomain,
   secondsElapsed,
   onOpenResearchHub,
 }) => {
@@ -27,6 +28,14 @@ export const QuizHeader: React.FC<QuizHeaderProps> = ({
   };
 
   const progressPercent = Math.round((answeredCount / totalQuestions) * 100);
+
+  const domains: DiagnosticDomain[] = [
+    'Mediální obsah',
+    'Ověřování informací',
+    'Bezpečnost a soukromí',
+    'Digitální nástroje',
+    'Kritické využití AI',
+  ];
 
   return (
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
@@ -43,7 +52,7 @@ export const QuizHeader: React.FC<QuizHeaderProps> = ({
                   PEDI 2026
                 </span>
                 <span className="px-2 py-0.5 text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/60 rounded-md">
-                  4. ročník
+                  4. ročník ({totalQuestions} úloh)
                 </span>
               </div>
               <p className="text-xs text-slate-500 hidden sm:block">
@@ -75,41 +84,32 @@ export const QuizHeader: React.FC<QuizHeaderProps> = ({
           </div>
         </div>
 
-        {/* Dolní lišta s filtry modulů & progress barem */}
+        {/* Dolní lišta s 5 diagnostickými oblastmi & progress barem */}
         <div className="mt-3 pt-2.5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
             <button
-              onClick={() => onSelectModule('All')}
-              className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${
-                activeModule === 'All'
+              onClick={() => onSelectDomain('All')}
+              className={`px-3 py-1 text-xs font-medium rounded-lg transition-all shrink-0 ${
+                activeDomain === 'All'
                   ? 'bg-indigo-600 text-white shadow-xs'
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
-              Vše (46)
+              Vše ({totalQuestions})
             </button>
-            <button
-              onClick={() => onSelectModule('Mediální gramotnost')}
-              className={`px-3 py-1 text-xs font-medium rounded-lg transition-all flex items-center gap-1 ${
-                activeModule === 'Mediální gramotnost'
-                  ? 'bg-indigo-600 text-white shadow-xs'
-                  : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <BarChart3 className="w-3 h-3" />
-              1. Mediální gramotnost (1–19)
-            </button>
-            <button
-              onClick={() => onSelectModule('IT Fitness')}
-              className={`px-3 py-1 text-xs font-medium rounded-lg transition-all flex items-center gap-1 ${
-                activeModule === 'IT Fitness'
-                  ? 'bg-indigo-600 text-white shadow-xs'
-                  : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              <BarChart3 className="w-3 h-3" />
-              2. IT Fitness (20–46)
-            </button>
+            {domains.map((dom) => (
+              <button
+                key={dom}
+                onClick={() => onSelectDomain(dom)}
+                className={`px-3 py-1 text-xs font-medium rounded-lg transition-all shrink-0 ${
+                  activeDomain === dom
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                {dom}
+              </button>
+            ))}
           </div>
 
           {/* Progress bar */}

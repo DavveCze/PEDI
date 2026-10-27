@@ -4,14 +4,18 @@ import {
   Trophy,
   CheckCircle2,
   XCircle,
-  BarChart3,
   BookOpen,
   ChevronDown,
   ChevronUp,
   RotateCcw,
   Sparkles,
+  Newspaper,
+  Search,
+  ShieldCheck,
+  Laptop,
+  Cpu,
 } from 'lucide-react';
-import { Question, QuizSubmission } from '../types/quiz';
+import { Question, QuizSubmission, DiagnosticDomain } from '../types/quiz';
 import { ResultTokenBox } from './ResultTokenBox';
 
 interface ResultSummaryProps {
@@ -20,6 +24,14 @@ interface ResultSummaryProps {
   onRestart: () => void;
   onOpenResearchHub: () => void;
 }
+
+const DOMAIN_ICONS: Record<DiagnosticDomain, React.ReactNode> = {
+  'Mediální obsah': <Newspaper className="w-4 h-4 text-indigo-600" />,
+  'Ověřování informací': <Search className="w-4 h-4 text-blue-600" />,
+  'Bezpečnost a soukromí': <ShieldCheck className="w-4 h-4 text-emerald-600" />,
+  'Digitální nástroje': <Laptop className="w-4 h-4 text-amber-600" />,
+  'Kritické využití AI': <Cpu className="w-4 h-4 text-purple-600" />,
+};
 
 export const ResultSummary: React.FC<ResultSummaryProps> = ({
   submission,
@@ -30,7 +42,6 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
-    // Spuštění oslavných konfet při zobrazení výsledků
     try {
       confetti({
         particleCount: 100,
@@ -38,35 +49,32 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
         origin: { y: 0.6 },
       });
     } catch {
-      // Ignorovat pokud canvas confetti selže
+      // ignore
     }
   }, []);
 
   const { score } = submission;
-  const mediaPct = Math.round((score.mediaGrammarScore / score.mediaGrammarMax) * 100);
-  const itPct = Math.round((score.itFitnessScore / score.itFitnessMax) * 100);
 
-  // Pedagogicko-diagnostická interpretace
   const getDiagnosticVerdict = (pct: number) => {
     if (pct >= 85) {
       return {
         level: 'Vynikající úroveň (Expert)',
         color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
-        desc: 'Prokazujete vysoce rozvinuté kritické myšlení, precizní detekci mediálních manipulací i pokročilé povědomí o kybernetické bezpečnosti a práci s daty.',
+        desc: 'Prokazujete vysoce rozvinuté kritické myšlení, precizní detekci mediálních manipulací i pokročilé povědomí o kybernetické bezpečnosti a práci s AI.',
       };
     }
     if (pct >= 70) {
       return {
         level: 'Velmi dobrá úroveň (Pokročilý)',
         color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
-        desc: 'Úspěšně rozpoznáváte většinu dezinformačních technik a bezpečnostních rizik. Pozornost doporučujeme věnovat detailnímu ověřování metadat a reverznímu hledání.',
+        desc: 'Úspěšně rozpoznáváte dezinformační formáty a bezpečnostní rizika. Pozornost doporučujeme věnovat detailnímu ověřování zdrojů a limitů AI modelů.',
       };
     }
     if (pct >= 50) {
       return {
         level: 'Standardní úroveň (Průměr)',
         color: 'text-amber-700 bg-amber-50 border-amber-200',
-        desc: 'Základní principy mediálního a digitálního světa ovládáte. U komplikovanějších úloh (např. sanitizace dat, scareware, analýza revizí) se však objevily nepřesnosti.',
+        desc: 'Základní principy mediální a digitální gramotnosti ovládáte. U komplikovanějších úloh (např. sanitizace dat, Passkeys, prostorové halucinace AI) se však objevily nepřesnosti.',
       };
     }
     return {
@@ -78,7 +86,6 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
 
   const verdict = getDiagnosticVerdict(score.percentage);
 
-  // Ověření správnosti jednotlivých otázek
   const isQuestionCorrect = (q: Question) => {
     const userAns = submission.answers[q.id];
     if (userAns === undefined) return false;
@@ -91,13 +98,21 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
     return userAns === q.correctAnswer;
   };
 
+  const domains: DiagnosticDomain[] = [
+    'Mediální obsah',
+    'Ověřování informací',
+    'Bezpečnost a soukromí',
+    'Digitální nástroje',
+    'Kritické využití AI',
+  ];
+
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6 pb-16">
       {/* Hlavní skóre karta */}
       <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-xl shadow-slate-200/50 text-center relative overflow-hidden">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200/60 rounded-full text-xs font-semibold mb-4">
           <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-          <span>Diagnostické vyhodnocení dokončeno</span>
+          <span>Diagnostické vyhodnocení dokončeno ({questions.length} položek)</span>
         </div>
 
         <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-amber-400 to-amber-500 text-white flex items-center justify-center shadow-lg shadow-amber-200 mb-4">
@@ -120,44 +135,35 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
           <div className="text-xs sm:text-sm leading-relaxed">{verdict.desc}</div>
         </div>
 
-        {/* Dva pilíře / moduly */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 max-w-2xl mx-auto">
-          {/* 1. Mediální gramotnost */}
-          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 text-left">
-            <div className="flex items-center justify-between text-xs font-semibold text-slate-600 mb-2">
-              <span className="flex items-center gap-1.5">
-                <BookOpen className="w-4 h-4 text-indigo-600" />
-                1. Mediální gramotnost
-              </span>
-              <span className="font-bold text-slate-900">
-                {score.mediaGrammarScore} / {score.mediaGrammarMax} ({mediaPct} %)
-              </span>
-            </div>
-            <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-indigo-600 rounded-full transition-all duration-500"
-                style={{ width: `${mediaPct}%` }}
-              />
-            </div>
-          </div>
-
-          {/* 2. IT Fitness */}
-          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 text-left">
-            <div className="flex items-center justify-between text-xs font-semibold text-slate-600 mb-2">
-              <span className="flex items-center gap-1.5">
-                <BarChart3 className="w-4 h-4 text-emerald-600" />
-                2. IT Fitness & Bezpečnost
-              </span>
-              <span className="font-bold text-slate-900">
-                {score.itFitnessScore} / {score.itFitnessMax} ({itPct} %)
-              </span>
-            </div>
-            <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-emerald-600 rounded-full transition-all duration-500"
-                style={{ width: `${itPct}%` }}
-              />
-            </div>
+        {/* 5 diagnostických oblastí */}
+        <div className="mt-8 pt-6 border-t border-slate-100 max-w-2xl mx-auto text-left">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+            Rozpad úspěšnosti podle 5 diagnostických oblastí
+          </h3>
+          <div className="space-y-3">
+            {domains.map((dom) => {
+              const domData = score.domainScores?.[dom] || { score: 0, max: 0, percentage: 0 };
+              if (domData.max === 0) return null;
+              return (
+                <div key={dom} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                  <div className="flex items-center justify-between text-xs font-semibold text-slate-700 mb-1.5">
+                    <span className="flex items-center gap-2">
+                      {DOMAIN_ICONS[dom]}
+                      {dom}
+                    </span>
+                    <span className="font-bold text-slate-900">
+                      {domData.score} / {domData.max} b ({domData.percentage} %)
+                    </span>
+                  </div>
+                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-indigo-600 rounded-full transition-all duration-500"
+                      style={{ width: `${domData.percentage}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -165,7 +171,7 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
       {/* Šifrovaný kód pro odevzdání */}
       <ResultTokenBox submission={submission} />
 
-      {/* Tlačítko pro detailní rozbor otázek */}
+      {/* Podrobný rozbor položek */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
         <button
           type="button"
@@ -174,7 +180,7 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
         >
           <div className="flex items-center gap-2.5">
             <BookOpen className="w-5 h-5 text-indigo-600" />
-            <span>Podrobný rozbor položek a diagnostických cílů (1–46)</span>
+            <span>Podrobný rozbor vyřešených položek ({questions.length})</span>
           </div>
           <div className="p-1 rounded-xl bg-slate-100 group-hover:bg-slate-200 transition-colors">
             {showDetails ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
@@ -183,7 +189,7 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
 
         {showDetails && (
           <div className="mt-6 pt-6 border-t border-slate-100 space-y-4 animate-in fade-in duration-300">
-            {questions.map((q) => {
+            {questions.map((q, idx) => {
               const correct = isQuestionCorrect(q);
               const userAns = submission.answers[q.id];
               return (
@@ -198,10 +204,10 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-slate-900">
-                        Položka {q.id}: {q.theme}
+                        Položka {idx + 1} (Q{q.id}): {q.theme}
                       </span>
                       <span className="text-xs px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600">
-                        {q.module}
+                        {q.domain}
                       </span>
                     </div>
                     {correct ? (
@@ -243,7 +249,7 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
         )}
       </div>
 
-      {/* Spodní ovládací tlačítka */}
+      {/* Ovládací tlačítka */}
       <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
         <button
           type="button"
@@ -259,7 +265,7 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
           onClick={onOpenResearchHub}
           className="px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm shadow-md shadow-indigo-200 transition-all flex items-center gap-2"
         >
-          <BarChart3 className="w-4 h-4" />
+          <Trophy className="w-4 h-4" />
           <span>Otevřít Výzkumný analytický panel</span>
         </button>
       </div>

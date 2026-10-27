@@ -1,6 +1,16 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { QUESTIONS_DATA } from './data/questionsData';
-import { RespondentInfo, QuizSubmission, ScoreBreakdown } from './types/quiz';
+import {
+  QUESTIONS_DATA,
+  getStandard20Questions,
+  getRandomized20Questions,
+} from './data/questionsData';
+import {
+  RespondentInfo,
+  QuizSubmission,
+  ScoreBreakdown,
+  DiagnosticDomain,
+  Question,
+} from './types/quiz';
 import { encodeQuizResult } from './utils/crypto';
 import { IntroModal } from './components/IntroModal';
 import { QuizHeader } from './components/QuizHeader';
@@ -12,7 +22,6 @@ import { CookieConsent } from './components/CookieConsent';
 import { Shield } from 'lucide-react';
 
 export const App: React.FC = () => {
-  // Stav respondenta (představení a informovaný souhlas)
   const [respondent, setRespondent] = useState<RespondentInfo | null>(() => {
     const saved = localStorage.getItem('pedi_current_respondent');
     if (saved) {
@@ -25,7 +34,20 @@ export const App: React.FC = () => {
     return null;
   });
 
-  // Uložené odpovědi
+  // Otázky pro aktuální běh testu
+  const [activeQuestions, setActiveQuestions] = useState<Question[]>(() => {
+    const saved = localStorage.getItem('pedi_active_questions');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return getStandard20Questions();
+      }
+    }
+    return getStandard20Questions();
+  });
+
+  // Odpovědi
   const [answers, setAnswers] = useState<Record<number, string | string[]>>(() => {
     const saved = localStorage.getItem('pedi_current_answers');
     if (saved) {
@@ -44,8 +66,8 @@ export const App: React.FC = () => {
     return saved ? Number(saved) || 0 : 0;
   });
 
-  // Filtr modulů
-  const [activeModuleFilter, setActiveModuleFilter] = useState<'All' | 'Mediální gramotnost' | 'IT Fitness'>('All');
+  // Filtr 5 diagnostických oblastí
+  const [activeDomainFilter, setActiveDomainFilter] = useState<'All' | DiagnosticDomain>('All');
 
   // Časomíra
   const [secondsElapsed, setSecondsElapsed] = useState<number>(0);
@@ -63,7 +85,6 @@ export const App: React.FC = () => {
     return null;
   });
 
-  // Výzkumný panel
   const [isResearchHubOpen, setIsResearchHubOpen] = useState(false);
 
   // Ukládání stavu do localStorage
@@ -76,6 +97,10 @@ export const App: React.FC = () => {
   }, [respondent]);
 
   useEffect(() => {
+    localStorage.setItem('pedi_active_questions', JSON.stringify(activeQuestions));
+  }, [activeQuestions]);
+
+  useEffect(() => {
     localStorage.setItem('pedi_current_answers', JSON.stringify(answers));
   }, [answers]);
 
@@ -83,7 +108,7 @@ export const App: React.FC = () => {
     localStorage.setItem('pedi_current_index', currentQuestionIndex.toString());
   }, [currentQuestionIndex]);
 
-  // Časomíra běží pouze při probíhajícím testu
+  // Časomíra
   useEffect(() => {
     if (!respondent || submission) return;
     const interval = setInterval(() => {
@@ -92,25 +117,41 @@ export const App: React.FC = () => {
     return () => clearInterval(interval);
   }, [respondent, submission]);
 
-  // Filtrované otázky podle zvoleného modulu
+  // Zahájení testu s výběrem otázek
+  const handleStartQuiz = (info: RespondentInfo) => {
+    let questionsList: Question[];
+    if (info.quizMode === 'random_20') {
+      questionsList = getRandomized20Questions();
+    } else if (info.quizMode === 'full_46') {
+      questionsList = QUESTIONS_DATA;
+    } else {
+      questionsList = getStandard20Questions();
+    }
+
+    setActiveQuestions(questionsList);
+    setAnswers({});
+    setCurrentQuestionIndex(0);
+    setSecondsElapsed(0);
+    setSubmission(null);
+    setRespondent(info);
+  };
+
+  // Filtrované otázky podle zvolené diagnostické oblasti
   const filteredQuestions = useMemo(() => {
-    if (activeModuleFilter === 'All') return QUESTIONS_DATA;
-    return QUESTIONS_DATA.filter((q) => q.module === activeModuleFilter);
-  }, [activeModuleFilter]);
+    if (activeDomainFilter === 'All') return activeQuestions;
+    return activeQuestions.filter((q) => q.domain === activeDomainFilter);
+  }, [activeDomainFilter, activeQuestions]);
 
-  // Zajištění platného indexu v rámci zobrazení
   const safeIndex = Math.min(Math.max(0, currentQuestionIndex), filteredQuestions.length - 1);
-  const currentQuestion = filteredQuestions[safeIndex] || QUESTIONS_DATA[0];
+  const currentQuestion = filteredQuestions[safeIndex] || activeQuestions[0];
 
-  // Počet zodpovězených otázek celkově
   const answeredCount = useMemo(() => {
-    return QUESTIONS_DATA.filter((q) => {
+    return activeQuestions.filter((q) => {
       const a = answers[q.id];
       return a !== undefined && a !== '' && (!Array.isArray(a) || a.length > 0);
     }).length;
-  }, [answers]);
+  }, [answers, activeQuestions]);
 
-  // Změna odpovědi
   const handleAnswerChange = (val: string | string[]) => {
     setAnswers((prev) => ({
       ...prev,
@@ -118,7 +159,6 @@ export const App: React.FC = () => {
     }));
   };
 
-  // Navigace
   const handleNext = () => {
     if (safeIndex < filteredQuestions.length - 1) {
       setCurrentQuestionIndex(safeIndex + 1);
@@ -134,12 +174,11 @@ export const App: React.FC = () => {
   };
 
   const handleSelectQuestionByIdx = (idx: number) => {
-    // Najdeme index v rámci aktuálního filtru
-    const targetQ = QUESTIONS_DATA[idx];
-    if (activeModuleFilter !== 'All' && targetQ.module !== activeModuleFilter) {
-      setActiveModuleFilter('All');
+    const targetQ = activeQuestions[idx];
+    if (activeDomainFilter !== 'All' && targetQ.domain !== activeDomainFilter) {
+      setActiveDomainFilter('All');
     }
-    const newIdx = (activeModuleFilter === 'All' ? QUESTIONS_DATA : filteredQuestions).findIndex(
+    const newIdx = (activeDomainFilter === 'All' ? activeQuestions : filteredQuestions).findIndex(
       (q) => q.id === targetQ.id
     );
     setCurrentQuestionIndex(newIdx >= 0 ? newIdx : idx);
@@ -148,7 +187,7 @@ export const App: React.FC = () => {
 
   // Vyhodnocení testu
   const handleSubmitQuiz = async () => {
-    const unAnswered = QUESTIONS_DATA.length - answeredCount;
+    const unAnswered = activeQuestions.length - answeredCount;
     if (unAnswered > 0) {
       const proceed = window.confirm(
         `Pozor: Ještě zbývá ${unAnswered} nezodpovězených položek. Opravdu si přejete test ukončit a vyhodnotit?`
@@ -156,12 +195,17 @@ export const App: React.FC = () => {
       if (!proceed) return;
     }
 
-    // Výpočet bodů
     let totalScore = 0;
-    let mediaGrammarScore = 0;
-    let itFitnessScore = 0;
+    const domainCounters: Record<DiagnosticDomain, { score: number; max: number }> = {
+      'Mediální obsah': { score: 0, max: 0 },
+      'Ověřování informací': { score: 0, max: 0 },
+      'Bezpečnost a soukromí': { score: 0, max: 0 },
+      'Digitální nástroje': { score: 0, max: 0 },
+      'Kritické využití AI': { score: 0, max: 0 },
+    };
 
-    QUESTIONS_DATA.forEach((q) => {
+    activeQuestions.forEach((q) => {
+      domainCounters[q.domain].max += 1;
       const userAns = answers[q.id];
       let isCorrect = false;
 
@@ -177,36 +221,41 @@ export const App: React.FC = () => {
 
       if (isCorrect) {
         totalScore += 1;
-        if (q.module === 'Mediální gramotnost') {
-          mediaGrammarScore += 1;
-        } else {
-          itFitnessScore += 1;
-        }
+        domainCounters[q.domain].score += 1;
       }
     });
 
+    const domainScores: any = {};
+    for (const [dom, cnt] of Object.entries(domainCounters)) {
+      domainScores[dom] = {
+        score: cnt.score,
+        max: cnt.max,
+        percentage: cnt.max > 0 ? Math.round((cnt.score / cnt.max) * 100) : 0,
+      };
+    }
+
     const score: ScoreBreakdown = {
       totalScore,
-      maxScore: QUESTIONS_DATA.length,
-      percentage: Math.round((totalScore / QUESTIONS_DATA.length) * 100),
-      mediaGrammarScore,
-      mediaGrammarMax: 19,
-      itFitnessScore,
-      itFitnessMax: 27,
+      maxScore: activeQuestions.length,
+      percentage: Math.round((totalScore / activeQuestions.length) * 100),
+      domainScores,
     };
 
     const resp = respondent || {
       respondentId: 'PEDI-4A-AUTO',
       grade: '4. ročník',
       group: '4.A',
+      quizMode: 'standard_20',
       consentGiven: true,
       startTime: new Date().toISOString(),
     };
 
     const completedAt = new Date().toISOString();
+    const questionIds = activeQuestions.map((q) => q.id);
 
     const encryptedToken = await encodeQuizResult({
       respondent: resp,
+      questionIds,
       answers,
       score,
       timeSpentSeconds: secondsElapsed,
@@ -215,6 +264,7 @@ export const App: React.FC = () => {
 
     const sub: QuizSubmission = {
       respondent: resp,
+      questionIds,
       answers,
       score,
       timeSpentSeconds: secondsElapsed,
@@ -227,13 +277,14 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Restartování testu pro nového respondenta
   const handleRestart = () => {
     localStorage.removeItem('pedi_current_respondent');
+    localStorage.removeItem('pedi_active_questions');
     localStorage.removeItem('pedi_current_answers');
     localStorage.removeItem('pedi_current_index');
     localStorage.removeItem('pedi_last_submission');
     setRespondent(null);
+    setActiveQuestions(getStandard20Questions());
     setAnswers({});
     setCurrentQuestionIndex(0);
     setSecondsElapsed(0);
@@ -242,36 +293,26 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
-      {/* 1. Úvodní okno s informovaným souhlasem */}
-      {!respondent && (
-        <IntroModal
-          onStart={(info) => {
-            setRespondent(info);
-            setSecondsElapsed(0);
-          }}
-        />
-      )}
+      {!respondent && <IntroModal onStart={handleStartQuiz} />}
 
-      {/* 2. Závěrečné vyhodnocení */}
       {submission ? (
         <main className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full">
           <ResultSummary
             submission={submission}
-            questions={QUESTIONS_DATA}
+            questions={activeQuestions}
             onRestart={handleRestart}
             onOpenResearchHub={() => setIsResearchHubOpen(true)}
           />
         </main>
       ) : respondent ? (
-        /* 3. Průběh testu */
         <>
           <QuizHeader
             currentIndex={safeIndex}
-            totalQuestions={QUESTIONS_DATA.length}
+            totalQuestions={activeQuestions.length}
             answeredCount={answeredCount}
-            activeModule={activeModuleFilter}
-            onSelectModule={(mod) => {
-              setActiveModuleFilter(mod);
+            activeDomain={activeDomainFilter}
+            onSelectDomain={(dom) => {
+              setActiveDomainFilter(dom);
               setCurrentQuestionIndex(0);
             }}
             secondsElapsed={secondsElapsed}
@@ -292,8 +333,8 @@ export const App: React.FC = () => {
             />
 
             <QuestionGridNav
-              questions={QUESTIONS_DATA}
-              currentIndex={QUESTIONS_DATA.findIndex((q) => q.id === currentQuestion.id)}
+              questions={activeQuestions}
+              currentIndex={activeQuestions.findIndex((q) => q.id === currentQuestion.id)}
               answers={answers}
               onSelectQuestion={handleSelectQuestionByIdx}
             />
@@ -301,19 +342,16 @@ export const App: React.FC = () => {
         </>
       ) : null}
 
-      {/* Výzkumný analytický panel pro autory práce */}
       <ResearchHubModal
         isOpen={isResearchHubOpen}
         onClose={() => setIsResearchHubOpen(false)}
-        questions={QUESTIONS_DATA}
       />
 
-      {/* Patička */}
       <footer className="mt-auto border-t border-slate-200/80 bg-white/60 py-6 text-center text-xs text-slate-500">
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-indigo-600" />
-            <span>PEDI 2026 • Školní diagnostický nástroj (Seminární práce)</span>
+            <span>PEDI 2026 • Školní diagnostický nástroj (5 oblastí • 20 úloh)</span>
           </div>
           <div className="flex items-center gap-4">
             <span className="text-slate-400">Anonymizovaný sběr dat dle GDPR</span>
@@ -327,7 +365,6 @@ export const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* GDPR Cookie Consent komponenta z dev-library */}
       <CookieConsent />
     </div>
   );

@@ -1,7 +1,16 @@
 import React, { useState } from 'react';
-import { BookOpen, ShieldCheck, Sparkles, User, School, ArrowRight } from 'lucide-react';
-import { RespondentInfo } from '../types/quiz';
+import {
+  Sparkles,
+  User,
+  School,
+  ArrowRight,
+  Shuffle,
+  ListOrdered,
+  Layers,
+} from 'lucide-react';
+import { RespondentInfo, QuizMode } from '../types/quiz';
 import { generateAnonymousId } from '../utils/crypto';
+import { DOMAIN_QUOTAS, DOMAIN_DESCRIPTIONS } from '../data/questionsData';
 
 interface IntroModalProps {
   onStart: (info: RespondentInfo) => void;
@@ -12,6 +21,7 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onStart }) => {
   const [group, setGroup] = useState('4.A');
   const [gender, setGender] = useState<RespondentInfo['gender']>('unspecified');
   const [age] = useState<number>(19);
+  const [quizMode, setQuizMode] = useState<QuizMode>('standard_20');
   const [consent, setConsent] = useState(true);
   const [respondentId] = useState(() => generateAnonymousId('4A'));
 
@@ -30,6 +40,7 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onStart }) => {
       age: Number(age) || 19,
       consentGiven: true,
       startTime: new Date().toISOString(),
+      quizMode,
     });
   };
 
@@ -43,35 +54,100 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onStart }) => {
             <span>Pedagogická diagnostika • Školní výzkumný nástroj</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            Diagnostický test mediální a digitální gramotnosti
+            Diagnostický test digitální a mediální gramotnosti
           </h1>
           <p className="mt-2 text-sm text-indigo-100/90 max-w-xl leading-relaxed">
-            Standardizovaný ověřovací nástroj pro studenty 4. ročníku. Výsledky slouží jako empirický podklad pro naši seminární práci.
+            Standardizovaný výzkumný nástroj pro studenty 4. ročníku. Zkrácená verze pokrývá 5 klíčových oblastí dle metodiky seminární práce.
           </p>
         </div>
 
         {/* Obsah & Formulář */}
         <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
-          {/* Informace o testu */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-600">
-            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-indigo-50/60 border border-indigo-100/60">
-              <BookOpen className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
-              <div>
-                <span className="font-semibold text-slate-900 block">46 diagnostických položek</span>
-                Rozděleno do dvou bloků: Mediální gramotnost a IT Fitness & Bezpečnost.
-              </div>
+          {/* Matice 5 diagnostických oblastí */}
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+            <div className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center justify-between">
+              <span>Skladba položek podle diagnostických oblastí (20 otázek)</span>
+              <span className="text-indigo-600">Celkem: 20 položek</span>
             </div>
-            <div className="flex items-start gap-2.5 p-3 rounded-2xl bg-emerald-50/60 border border-emerald-100/60">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <div>
-                <span className="font-semibold text-slate-900 block">100% Anonymní & Šifrované</span>
-                Nesbíráme žádná jména, e-maily ani IP adresy. Výsledek obdržíte v šifrovaném kódu.
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              {Object.entries(DOMAIN_QUOTAS).map(([domain, count]) => (
+                <div key={domain} className="p-2.5 rounded-xl bg-white border border-slate-200 flex items-start justify-between gap-2">
+                  <div>
+                    <div className="font-semibold text-slate-900">{domain}</div>
+                    <div className="text-[11px] text-slate-500 line-clamp-1">{DOMAIN_DESCRIPTIONS[domain as keyof typeof DOMAIN_DESCRIPTIONS]}</div>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-md font-bold bg-indigo-50 text-indigo-700 shrink-0">
+                    {count} {count === 1 ? 'položka' : count < 5 ? 'položky' : 'položek'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Volba režimu testu */}
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              Volba testovací baterie
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <button
+                type="button"
+                onClick={() => setQuizMode('standard_20')}
+                className={`p-3 rounded-2xl border-2 text-left transition-all ${
+                  quizMode === 'standard_20'
+                    ? 'border-indigo-600 bg-indigo-50/70 text-indigo-950 font-medium'
+                    : 'border-slate-200 hover:border-slate-300 text-slate-600'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-700 mb-1">
+                  <ListOrdered className="w-3.5 h-3.5" />
+                  Standardní (20 položek)
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  Reprezentativní výběr 5+4+5+3+3 položek (Doporučeno, ~10 min).
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setQuizMode('random_20')}
+                className={`p-3 rounded-2xl border-2 text-left transition-all ${
+                  quizMode === 'random_20'
+                    ? 'border-indigo-600 bg-indigo-50/70 text-indigo-950 font-medium'
+                    : 'border-slate-200 hover:border-slate-300 text-slate-600'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-700 mb-1">
+                  <Shuffle className="w-3.5 h-3.5" />
+                  Randomizovaný (20 položek)
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  Náhodné losování z banky dle kvót. Zabraňuje opisování.
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setQuizMode('full_46')}
+                className={`p-3 rounded-2xl border-2 text-left transition-all ${
+                  quizMode === 'full_46'
+                    ? 'border-indigo-600 bg-indigo-50/70 text-indigo-950 font-medium'
+                    : 'border-slate-200 hover:border-slate-300 text-slate-600'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-700 mb-1">
+                  <Layers className="w-3.5 h-3.5" />
+                  Plná baterie (46 položek)
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  Kompletní archiv všech diagnostických otázek (~25 min).
+                </div>
+              </button>
             </div>
           </div>
 
           {/* Demografické parametry pro výzkum */}
-          <div className="space-y-4 pt-2">
+          <div className="space-y-4 pt-1">
             <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Výzkumné zařazení respondenta (Anonymní)
             </div>
@@ -131,7 +207,7 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onStart }) => {
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs">
-              <span className="text-slate-600 font-medium">Váš vygenerovaný anonymní výzkumný kód:</span>
+              <span className="text-slate-600 font-medium">Váš anonymní výzkumný kód respondenta:</span>
               <span className="font-mono font-bold text-indigo-700 px-2.5 py-1 bg-white border border-indigo-100 rounded-lg">
                 {respondentId}
               </span>
@@ -159,11 +235,11 @@ export const IntroModal: React.FC<IntroModalProps> = ({ onStart }) => {
               type="submit"
               className="w-full py-3.5 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all flex items-center justify-center gap-2 group"
             >
-              <span>Zahájit diagnostický test</span>
+              <span>Zahájit diagnostický test ({quizMode === 'full_46' ? '46 otázek' : '20 otázek'})</span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
             <p className="text-center text-[11px] text-slate-400 mt-2">
-              Orientační doba vyplnění: 15–20 minut. Odpovědi se průběžně ukládají.
+              Orientační doba: {quizMode === 'full_46' ? '25 minut' : '10–12 minut'}. Odpovědi se průběžně ukládají.
             </p>
           </div>
         </form>

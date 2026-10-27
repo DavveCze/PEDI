@@ -85,10 +85,10 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
           <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold px-2.5 py-1 bg-indigo-600 text-white rounded-lg shadow-xs">
-                Položka {question.id} z {totalQuestions}
+                Položka {currentIndex + 1} z {totalQuestions}
               </span>
-              <span className="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-lg">
-                {question.module}
+              <span className="text-xs font-semibold px-2.5 py-1 bg-indigo-50 text-indigo-700 border border-indigo-100 rounded-lg">
+                {question.domain}
               </span>
             </div>
             <div className="text-xs font-medium text-slate-500 flex items-center gap-1">

@@ -9,22 +9,19 @@ import {
   CheckCircle2,
   Users,
   Award,
-  BarChart3,
   Sparkles,
+  BarChart3,
 } from 'lucide-react';
 import { decodeQuizResult, exportResultsToCsv } from '../utils/crypto';
-import { Question } from '../types/quiz';
 
 interface ResearchHubModalProps {
   isOpen: boolean;
   onClose: () => void;
-  questions: Question[];
 }
 
 export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
   isOpen,
   onClose,
-  questions,
 }) => {
   const [tokensInput, setTokensInput] = useState('');
   const [submissions, setSubmissions] = useState<any[]>(() => {
@@ -40,14 +37,12 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
   });
   const [importStatus, setImportStatus] = useState<string | null>(null);
 
-  // Uložení do LocalStorage
   useEffect(() => {
     localStorage.setItem('pedi_aggregated_submissions', JSON.stringify(submissions));
   }, [submissions]);
 
   if (!isOpen) return null;
 
-  // Import vložených kódů
   const handleImportTokens = async () => {
     if (!tokensInput.trim()) return;
 
@@ -63,7 +58,6 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
     for (const line of lines) {
       const res = await decodeQuizResult(line);
       if (res.valid && res.data) {
-        // Kontrola duplicity podle rid
         const exists = submissions.some((s) => s.rid === res.data.rid);
         if (!exists && !newItems.some((s) => s.rid === res.data.rid)) {
           newItems.push(res.data);
@@ -84,7 +78,6 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
     setTokensInput('');
   };
 
-  // Vymazání databáze
   const handleClearAll = () => {
     if (window.confirm('Opravdu si přejete smazat všechny načtené výzkumné výsledky z tohoto zařízení?')) {
       setSubmissions([]);
@@ -92,7 +85,6 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
     }
   };
 
-  // Export do CSV pro Excel
   const handleExportCsv = () => {
     if (submissions.length === 0) {
       alert('V databázi zatím nejsou žádné výsledky k exportu.');
@@ -108,8 +100,7 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
     URL.revokeObjectURL(url);
   };
 
-  // Vložení ukázkových dat pro demonstraci
-  const handleLoadDemoData = async () => {
+  const handleLoadDemoData = () => {
     const demoSubmissions = [
       {
         rid: 'PEDI-4A-D821',
@@ -117,13 +108,20 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
         grp: '4.A',
         gen: 'female',
         age: 19,
+        mode: 'standard_20',
+        qids: [1, 2, 4, 8, 15, 3, 7, 9, 10, 6, 19, 29, 31, 34, 35, 40, 44, 13, 20, 22],
         ts: new Date().toISOString(),
-        dur: 840,
-        sc: 41,
-        max: 46,
-        pct: 89,
-        mSc: 17,
-        iSc: 24,
+        dur: 620,
+        sc: 18,
+        max: 20,
+        pct: 90,
+        doms: {
+          'Mediální obsah': { score: 5, max: 5, percentage: 100 },
+          'Ověřování informací': { score: 4, max: 4, percentage: 100 },
+          'Bezpečnost a soukromí': { score: 4, max: 5, percentage: 80 },
+          'Digitální nástroje': { score: 2, max: 3, percentage: 67 },
+          'Kritické využití AI': { score: 3, max: 3, percentage: 100 },
+        },
         ans: {},
       },
       {
@@ -132,13 +130,20 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
         grp: '4.A',
         gen: 'male',
         age: 19,
+        mode: 'standard_20',
+        qids: [1, 2, 4, 8, 15, 3, 7, 9, 10, 6, 19, 29, 31, 34, 35, 40, 44, 13, 20, 22],
         ts: new Date().toISOString(),
-        dur: 920,
-        sc: 36,
-        max: 46,
-        pct: 78,
-        mSc: 15,
-        iSc: 21,
+        dur: 710,
+        sc: 15,
+        max: 20,
+        pct: 75,
+        doms: {
+          'Mediální obsah': { score: 4, max: 5, percentage: 80 },
+          'Ověřování informací': { score: 3, max: 4, percentage: 75 },
+          'Bezpečnost a soukromí': { score: 4, max: 5, percentage: 80 },
+          'Digitální nástroje': { score: 2, max: 3, percentage: 67 },
+          'Kritické využití AI': { score: 2, max: 3, percentage: 67 },
+        },
         ans: {},
       },
       {
@@ -147,57 +152,29 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
         grp: '4.B',
         gen: 'female',
         age: 19,
+        mode: 'random_20',
+        qids: [1, 2, 4, 8, 14, 5, 7, 9, 11, 6, 19, 27, 31, 32, 36, 41, 45, 18, 20, 21],
         ts: new Date().toISOString(),
-        dur: 790,
-        sc: 38,
-        max: 46,
-        pct: 83,
-        mSc: 16,
-        iSc: 22,
-        ans: {},
-      },
-      {
-        rid: 'PEDI-4B-P504',
-        grd: '4. ročník',
-        grp: '4.B',
-        gen: 'male',
-        age: 20,
-        ts: new Date().toISOString(),
-        dur: 1100,
-        sc: 29,
-        max: 46,
-        pct: 63,
-        mSc: 12,
-        iSc: 17,
+        dur: 590,
+        sc: 16,
+        max: 20,
+        pct: 80,
+        doms: {
+          'Mediální obsah': { score: 4, max: 5, percentage: 80 },
+          'Ověřování informací': { score: 3, max: 4, percentage: 75 },
+          'Bezpečnost a soukromí': { score: 4, max: 5, percentage: 80 },
+          'Digitální nástroje': { score: 2, max: 3, percentage: 67 },
+          'Kritické využití AI': { score: 3, max: 3, percentage: 100 },
+        },
         ans: {},
       },
     ];
     setSubmissions((prev) => [...prev, ...demoSubmissions]);
-    setImportStatus('Vloženy 4 anonymní ukázkové záznamy pro otestování analytiky.');
+    setImportStatus('Vloženy 3 anonymní ukázkové záznamy (20 položek) pro demonstraci.');
   };
 
-  // Výpočet úspěšnosti položek pro pedagogickou diagnostiku
-  const itemDifficulties = questions.slice(0, 10).map((q) => {
-    if (submissions.length === 0) return { id: q.id, theme: q.theme, rate: 0 };
-    const correctCount = submissions.filter((s) => {
-      const uAns = s.ans?.[q.id];
-      if (Array.isArray(q.correctAnswer)) {
-        return Array.isArray(uAns) && q.correctAnswer.every((v) => uAns.includes(v));
-      }
-      return uAns === q.correctAnswer;
-    }).length;
-    return {
-      id: q.id,
-      theme: q.theme,
-      rate: Math.round((correctCount / submissions.length) * 100),
-    };
-  });
-
   const totalN = submissions.length;
-  const avgScore = totalN > 0 ? (submissions.reduce((acc, s) => acc + (s.sc || 0), 0) / totalN).toFixed(1) : '0';
   const avgPct = totalN > 0 ? (submissions.reduce((acc, s) => acc + (s.pct || 0), 0) / totalN).toFixed(1) : '0';
-  const avgMedia = totalN > 0 ? (submissions.reduce((acc, s) => acc + (s.mSc || 0), 0) / totalN).toFixed(1) : '0';
-  const avgIt = totalN > 0 ? (submissions.reduce((acc, s) => acc + (s.iSc || 0), 0) / totalN).toFixed(1) : '0';
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
@@ -213,7 +190,7 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
                 Výzkumný analytický panel (Research Hub)
               </h2>
               <p className="text-xs text-slate-400">
-                Agregace anonymizovaných kódů a statistika pro seminární práci z pedagogické diagnostiky
+                Agregace anonymizovaných kódů a 5 diagnostických oblastí pro seminární práci
               </p>
             </div>
           </div>
@@ -225,10 +202,10 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
           </button>
         </div>
 
-        {/* Hlavní scrollovatelný obsah */}
+        {/* Hlavní obsah */}
         <div className="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1">
           {/* Metriky souhrnu */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-100">
               <div className="flex items-center gap-2 text-xs font-semibold text-indigo-700 mb-1">
                 <Users className="w-4 h-4" />
@@ -240,31 +217,21 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
             <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
               <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700 mb-1">
                 <Award className="w-4 h-4" />
-                <span>Průměrné skóre</span>
+                <span>Průměrná úspěšnost</span>
               </div>
-              <div className="text-2xl font-black text-emerald-950">
-                {avgScore} / 46 <span className="text-xs font-medium text-emerald-700">({avgPct} %)</span>
-              </div>
+              <div className="text-2xl font-black text-emerald-950">{avgPct} %</div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100">
-              <div className="flex items-center gap-2 text-xs font-semibold text-blue-700 mb-1">
-                <BarChart3 className="w-4 h-4" />
-                <span>Mediální gramotnost</span>
-              </div>
-              <div className="text-2xl font-black text-blue-950">{avgMedia} / 19 b</div>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-purple-50 border border-purple-100">
+            <div className="p-4 rounded-2xl bg-purple-50 border border-purple-100 col-span-2 sm:col-span-1">
               <div className="flex items-center gap-2 text-xs font-semibold text-purple-700 mb-1">
                 <BarChart3 className="w-4 h-4" />
-                <span>IT Fitness & Bezpečnost</span>
+                <span>Oblasti diagnostiky</span>
               </div>
-              <div className="text-2xl font-black text-purple-950">{avgIt} / 27 b</div>
+              <div className="text-sm font-bold text-purple-950">5 oblastí (5+4+5+3+3)</div>
             </div>
           </div>
 
-          {/* Vkládací formulář pro kódy */}
+          {/* Vkládací formulář */}
           <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
@@ -277,7 +244,7 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
                 className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1"
               >
                 <Sparkles className="w-3.5 h-3.5" />
-                Nahrát demo data (4 respondenti)
+                Nahrát demo data (3 respondenti)
               </button>
             </div>
 
@@ -352,52 +319,37 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
                 <table className="w-full text-left text-xs text-slate-600 divide-y divide-slate-200">
                   <thead className="bg-slate-50 text-slate-700 font-bold uppercase tracking-wider text-[10px]">
                     <tr>
-                      <th className="px-3.5 py-3">ID Respondenta</th>
-                      <th className="px-3.5 py-3">Třída</th>
-                      <th className="px-3.5 py-3">Pohlaví</th>
-                      <th className="px-3.5 py-3">Čas</th>
-                      <th className="px-3.5 py-3">Celkové Skóre</th>
-                      <th className="px-3.5 py-3">Úspěšnost</th>
-                      <th className="px-3.5 py-3">Mediální</th>
-                      <th className="px-3.5 py-3">IT Fitness</th>
+                      <th className="px-3 py-3">ID Respondenta</th>
+                      <th className="px-3 py-3">Třída</th>
+                      <th className="px-3 py-3">Režim</th>
+                      <th className="px-3 py-3">Položek</th>
+                      <th className="px-3 py-3">Čas</th>
+                      <th className="px-3 py-3">Skóre</th>
+                      <th className="px-3 py-3">Úspěšnost</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 bg-white">
                     {submissions.map((sub, idx) => (
                       <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                        <td className="px-3.5 py-2.5 font-mono font-bold text-slate-900">{sub.rid}</td>
-                        <td className="px-3.5 py-2.5">{sub.grp || sub.grd}</td>
-                        <td className="px-3.5 py-2.5">{sub.gen}</td>
-                        <td className="px-3.5 py-2.5">{Math.round((sub.dur || 0) / 60)} min</td>
-                        <td className="px-3.5 py-2.5 font-bold text-slate-900">{sub.sc} / 46</td>
-                        <td className="px-3.5 py-2.5">
+                        <td className="px-3 py-2.5 font-mono font-bold text-slate-900">{sub.rid}</td>
+                        <td className="px-3 py-2.5">{sub.grp || sub.grd}</td>
+                        <td className="px-3 py-2.5">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] bg-slate-100 text-slate-700 font-medium">
+                            {sub.mode === 'random_20' ? 'Random 20' : sub.mode === 'full_46' ? 'Plný 46' : 'Standard 20'}
+                          </span>
+                        </td>
+                        <td className="px-3 py-2.5">{sub.qids?.length || sub.max || 20}</td>
+                        <td className="px-3 py-2.5">{Math.round((sub.dur || 0) / 60)} min</td>
+                        <td className="px-3 py-2.5 font-bold text-slate-900">{sub.sc} / {sub.max || 20}</td>
+                        <td className="px-3 py-2.5">
                           <span className="px-2 py-0.5 rounded-md font-semibold bg-indigo-50 text-indigo-700">
                             {sub.pct} %
                           </span>
                         </td>
-                        <td className="px-3.5 py-2.5">{sub.mSc} / 19</td>
-                        <td className="px-3.5 py-2.5">{sub.iSc} / 27</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-              </div>
-            )}
-
-            {/* Pedagogická analýza obtížnosti položek (Item Difficulty Index) */}
-            {submissions.length > 0 && (
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 mt-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
-                  Diagnostická obtížnost vybraných položek (Úspěšnost %):
-                </h4>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
-                  {itemDifficulties.map((item) => (
-                    <div key={item.id} className="p-2 bg-white rounded-xl border border-slate-200">
-                      <div className="font-semibold text-slate-800">Q{item.id}: {item.theme}</div>
-                      <div className="text-indigo-600 font-bold mt-0.5">{item.rate} % správně</div>
-                    </div>
-                  ))}
-                </div>
               </div>
             )}
           </div>
@@ -405,7 +357,7 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
 
         {/* Spodní lišta */}
         <div className="p-4 sm:p-5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-          <span>Standard pro pedagogickou diagnostiku 2026</span>
+          <span>Standard pro pedagogickou diagnostiku 2026 • 5 oblastí</span>
           <button
             onClick={onClose}
             className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl font-semibold transition-colors"
