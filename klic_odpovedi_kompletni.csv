@@ -1,0 +1,47 @@
+﻿Modul,Téma,Otázka / Podotázka,Typ otázky,Správná odpověď,Diagnostický cíl / Odůvodnění
+Mediální gramotnost,Fotka do časopisu (úprava),Chyba odporující logice po editaci fotky v časopise.,Výběr pole (1-4),Dle zobrazené chyby (např. pole 3),Vnímání vizuální manipulace a nelogičností v komerční fotografii.
+Mediální gramotnost,Typ mediálního sdělení,Určete typ mediálního sdělení (Královéhradecko).,Výběr z možností,tisková zpráva,Rozpoznání formátu PR a tiskových zpráv od nezávislé žurnalistiky.
+Mediální gramotnost,Falešný profil na sociálních sítích,"Který z tweetů nenapsal Andrej Babiš, ale někdo, kdo se za něj vydává?",Výběr (tweet 1 / tweet 2),tweet 2 (parodický / podvržený účet),"Ověřování rukojeti (@handle), data vytvoření a stylu komunikace."
+Mediální gramotnost,Zavádějící graf (ceny benzínu),Proč je titulek/graf o ceně benzínu v červenci 2022 zavádějící?,Výběr z možností,"Měřítko na ose Y je příliš jemné, takže kolísání cen vypadá dramatičtěji než ve skutečnosti.",Kritická práce s grafickou vizualizací kvantitativních dat (oříznutá osa Y).
+Mediální gramotnost,Falešné citáty,Který z citátů Mahátma Gándhí určitě neřekl?,Výběr (citát 1 / citát 2),citát 2 (moderní smyšlený apokryf),Ověřování historických zdrojů a atribuce výroků.
+Mediální gramotnost,Zabezpečení online účtů,Která z technik zvýší zabezpečení online účtů?,Výběr z možností,"použití dvou kroků při přihlašování, například heslo a kód zaslaný na mobilní telefon",Znalost dvoufaktorové autentizace (2FA/MFA).
+Mediální gramotnost,Reverzní vyhledávání obrázků,Na které webové stránce se fotka muže objevila poprvé?,Identifikace webu,Původní zdroj zjištěný přes Google Lens / TinEye,Schopnost ověřit původ obrazového materiálu pomocí reverzního hledání.
+Mediální gramotnost,Clickbait,Který z titulků bychom mohli označit pojmem clickbait?,Výběr (1 / 2 / 3),Senzacechtivý titulek s informační mezerou,Rozpoznání manipulativních titulků cílících na zvědavost a emoce.
+Mediální gramotnost,Nekorespondující popisky,Ve kterých případech popisky nekorespondují s fotkami?,Více správných odpovědí,případ 1 a případ 3 (dle kontextu),Rozpoznání vytržení snímku z původního kontextu (dekontextualizace).
+Mediální gramotnost,Fotomontáž zprávy,Co na zprávě o letišti nesedí?,Výběr z možností,"Tento web ani tato zpráva neexistují, je to fotomontáž.",Ověření pravosti webového rozhraní a detekce grafického podvrhu.
+Mediální gramotnost,Konfirmační zkreslení,Co je Confirmation bias (konfirmační zkreslení)?,Výběr z možností,"Upřednostňovat informace, které podporují jeho vlastní názor.",Znalost klíčového kognitivního zkreslení ovlivňujícího interpretaci zpráv.
+Mediální gramotnost,Koncesionářské poplatky,Co jsou koncesionářské poplatky pro ČT a ČRo?,Výběr z možností,"Poplatky, které platí domácnosti a firmy, jež vlastní televizní nebo rozhlasové přijímače.",Chápání principu financování a nezávislosti veřejnoprávních médií.
+Mediální gramotnost,Syntetický obraz (AI),Kdy a kde byl pořízen obrázek se sněhem?,Výběr z možností,"nikde, obrázek je vygenerovaný umělou inteligencí",Identifikace artefaktů generativních modelů (Midjourney/DALL-E).
+Mediální gramotnost,Product placement,Co je to Product placement?,Výběr z možností,"Forma skryté reklamy, kdy je inzerovaný produkt umístěn do uměleckého díla.",Porozumění komerčním a marketingovým formátům v audiovizuální tvorbě.
+Mediální gramotnost,Neoznačená reklama,V čem je zobrazený příspěvek na Instagramu problematický?,Výběr z možností,Jedná se o neoznačenou reklamu.,Povědomí o etických a zákonných povinnostech označovat sponzorovaný obsah.
+Mediální gramotnost,Vlastnictví sociálních sítí,Kdo vlastní společnost Instagram?,Výběr z možností,Meta (dříve Facebook),Znalost mediálního vlastnictví a technologických konglomerátů.
+Mediální gramotnost,Veřejnoprávní služba,V čem se liší veřejnoprávní ČT od soukromých stanic?,Více správných odpovědí,ČT musí vytvářet vyváženou nabídku pro všechny skupiny obyvatel; ČT musí přispívat k právnímu povědomí a kulturní identitě.,Znalost zákona o ČT a role veřejnoprávního vysílání v demokratické společnosti.
+Mediální gramotnost,Deepfake,Co je to deepfake?,Výběr z možností,"Produkce velmi věrohodně vypadajících videí, obrázků nebo zvukových souborů, které jsou vydávány za reálné.",Povědomí o rizicích syntetických audiovizuálních médií.
+Mediální gramotnost,Klamavá nabídka / Phishing,Jak označit podezřelou zprávu na WhatsAppu/Messengeru?,Výběr z možností,podvodná zpráva (tzv. phishing),Ochrana před sociálním inženýrstvím a podvodnými zprávami.
+IT Fitness,Trasa vlaku,"Na mapě č. 2 na trase EC 130 Bathory jsou zobrazena i města, kde nezastavuje.",PRAVDA / NEPRAVDA,PRAVDA,Kritické posouzení AI generované schématické mapy vůči reálnému jízdnímu řádu.
+IT Fitness,Trasa vlaku,Na mapě č. 2 lze vidět celou trasu vlaku EC 130 Bathory.,PRAVDA / NEPRAVDA,NEPRAVDA,"Ověření úplnosti dat (spoj vede až do Polska, zobrazen je jen fragment)."
+IT Fitness,Trasa vlaku,Mapa č. 2 neodpovídá skutečné geografické orientaci.,PRAVDA / NEPRAVDA,PRAVDA,Detekce prostorových chyb a halucinací generativních modelů.
+IT Fitness,Dezinformace (EDMO),Národní zdroj pro ověřování faktů pro Chorvatsko.,Výběr z možností,ADMO,Schopnost dohledat evropské fact-checkingové sítě (Adria Digital Media Observatory).
+IT Fitness,WiFi4EU,Mobilní aplikace umožňuje přístup k 7 200 hotspotům.,PRAVDA / NEPRAVDA,NEPRAVDA,Rozlišení počtu zapojených obcí (7 200) od počtu hotspotů (>90 000).
+IT Fitness,WiFi4EU,PDF s nejčastějšími dotazy ve francouzštině má 36 stran.,PRAVDA / NEPRAVDA,PRAVDA,Přesné vyhledávání v dokumentových metadatech na portálu EU.
+IT Fitness,WiFi4EU,Iniciativa WiFi4EU poskytuje občanům bezplatný přístup k Wi-Fi na veřejných místech.,PRAVDA / NEPRAVDA,PRAVDA,Čtení s porozuměním z oficiálního webu instituce.
+IT Fitness,Citlivé údaje,Nastavení bílé barvy výplně a písma v tabulkovém procesoru.,ZABEZPEČÍ / NEZABEZPEČÍ,NEZABEZPEČÍ,Rozlišení vizuálního maskování a skutečného odstranění dat.
+IT Fitness,Citlivé údaje,Nastavení černé výplně a písma s exportem do PDF.,ZABEZPEČÍ / NEZABEZPEČÍ,NEZABEZPEČÍ,Povědomí o zachování textové vrstvy v needitovatelných formátech (PDF).
+IT Fitness,Citlivé údaje,Vymazání hodnot ve sloupci s citlivými údaji.,ZABEZPEČÍ / NEZABEZPEČÍ,ZABEZPEČÍ,Korektní sanitizace dat před distribucí třetím stranám.
+IT Fitness,Nastavení prohlížeče,Markovi se zobrazilo legitimní bezpečnostní upozornění.,PRAVDA / NEPRAVDA,NEPRAVDA,Rozpoznání techniky scareware (podvodné webové hlášení).
+IT Fitness,Přístupový klíč,Pravdivé tvrzení o přístupovém klíči (Passkey).,Výběr z možností,Přístupový klíč je odolnější vůči phishingu než heslo.,Znalost moderní bezheslové autentizace dle FIDO2/WebAuthn standardu.
+IT Fitness,USB nabíjení (Juice jacking),Zůstat po celou dobu u nabíječky ochrání telefon.,PRAVDA / NEPRAVDA,NEPRAVDA,Pochopení mechaniky přenosu dat po USB pinu.
+IT Fitness,USB nabíjení (Juice jacking),Veřejné bezdrátové nabíječky jsou vždy bezpečné.,PRAVDA / NEPRAVDA,NEPRAVDA,Kritický pohled na hardwarová a přepěťová rizika.
+IT Fitness,USB nabíjení (Juice jacking),Juice jacking může do telefonu přenést škodlivý software.,PRAVDA / NEPRAVDA,PRAVDA,Znalost kyberbezpečnostních rizik veřejných dobíjecích terminálů.
+IT Fitness,Informační leták (Docx),Nadpis COMPARING je mimo tabulky a má nastavené kapitálky.,PRAVDA / NEPRAVDA,PRAVDA,Typografická a strukturální analýza dokumentu.
+IT Fitness,Informační leták (Docx),Ve třetím sloupci se nachází odrážkový seznam vytvořený příslušným nástrojem.,PRAVDA / NEPRAVDA,NEPRAVDA,Rozlišení systémového seznamu od ručně vepsaných symbolů.
+IT Fitness,Informační leták (Docx),Nadpis Summary je ve všech sloupcích zarovnaný doleva.,PRAVDA / NEPRAVDA,NEPRAVDA,Ověření formátování odstavců v tabulce.
+IT Fitness,Práce s databází (Netflix I.),Umístění titulu Lenox Hill v žebříčku roku 2020 dle IMDb.,Výběr z možností,na třetím,Filtrování a víceúrovňové řazení v tabulkovém procesoru.
+IT Fitness,Práce s databází (Netflix II.),Počet titulů vydaných v roce 2005.,Výběr z možností,31,Agregace a počítání záznamů splňujících kritérium (funkce COUNTIF).
+IT Fitness,Sdílení v cloudu vs Příloha,Změna přes sdílený odkaz s právem úprav se projeví u odesílatele.,PRAVDA / NEPRAVDA,PRAVDA,Porozumění kolaborativní editaci v reálném čase.
+IT Fitness,Sdílení v cloudu vs Příloha,Po zrušení přístupu si příjemce může soubor stále stáhnout.,PRAVDA / NEPRAVDA,NEPRAVDA,Řízení přístupových práv v cloudových úložištích.
+IT Fitness,Sdílení v cloudu vs Příloha,Příjemce přílohy vidí všechny předchozí verze souboru.,PRAVDA / NEPRAVDA,NEPRAVDA,Rozdíl mezi statickým exportem a cloudovým verzováním.
+IT Fitness,Sociální sítě,Který z profilů má nejvíce příspěvků?,Výběr z možností,sciencemuseum,Vyhledání a porovnání metrik na veřejných sociálních profilech.
+IT Fitness,Sledování změn (Trip.docx),Čas u Louvre Museum z 2 na 3 hours upravil Martin.,PRAVDA / NEPRAVDA,NEPRAVDA,Identifikace autora úpravy ve sledování revizí.
+IT Fitness,Sledování změn (Trip.docx),K Musée d’Orsay napsali komentář všichni tři.,PRAVDA / NEPRAVDA,NEPRAVDA,Audit komentářových vláken v revizním nástroji.
+IT Fitness,Sledování změn (Trip.docx),Na komentář k obědu odpověděl Jack až následující den.,PRAVDA / NEPRAVDA,PRAVDA,Analýza časových razítek v revizích dokumentu.
