@@ -12,11 +12,22 @@ import { QuizHeader } from './components/QuizHeader';
 import { QuestionCard } from './components/QuestionCard';
 import { QuestionGridNav } from './components/QuestionGridNav';
 import { ResultSummary } from './components/ResultSummary';
-import { ResearchHubModal } from './components/ResearchHubModal';
 import { ResearchConditionsModal } from './components/ResearchConditionsModal';
-import { Shield, FileText } from 'lucide-react';
+import { TeacherPage } from './pages/TeacherPage';
+import { Shield, FileText, Lock } from 'lucide-react';
+
+const isTeacherPath = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  const hash = (window.location.hash || '').toLowerCase();
+  const path = (window.location.pathname || '').toLowerCase();
+  return hash.includes('ucitel') || path.endsWith('/ucitel') || path.endsWith('/ucitel/');
+};
 
 export const App: React.FC = () => {
+  const [currentRoute, setCurrentRoute] = useState<'quiz' | 'teacher'>(() => {
+    return isTeacherPath() ? 'teacher' : 'quiz';
+  });
+
   const [respondent, setRespondent] = useState<RespondentInfo | null>(() => {
     const saved = localStorage.getItem('pedi_current_respondent');
     if (saved) {
@@ -60,10 +71,37 @@ export const App: React.FC = () => {
     return null;
   });
 
-  const [isResearchHubOpen, setIsResearchHubOpen] = useState(false);
   const [isConditionsOpen, setIsConditionsOpen] = useState(false);
 
-  // Ukládání stavu do localStorage
+  // Synchronizace routování s hash a historií prohlížeče (kompatibilní s GitHub Pages)
+  useEffect(() => {
+    const handleLocationChange = () => {
+      if (isTeacherPath()) {
+        setCurrentRoute('teacher');
+      } else {
+        setCurrentRoute('quiz');
+      }
+    };
+
+    window.addEventListener('hashchange', handleLocationChange);
+    window.addEventListener('popstate', handleLocationChange);
+    return () => {
+      window.removeEventListener('hashchange', handleLocationChange);
+      window.removeEventListener('popstate', handleLocationChange);
+    };
+  }, []);
+
+  const navigateTo = (route: 'quiz' | 'teacher') => {
+    setCurrentRoute(route);
+    if (route === 'teacher') {
+      window.location.hash = '/ucitel';
+    } else {
+      window.location.hash = '/';
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Ukládání stavu testu do localStorage
   useEffect(() => {
     if (respondent) {
       localStorage.setItem('pedi_current_respondent', JSON.stringify(respondent));
@@ -82,12 +120,12 @@ export const App: React.FC = () => {
 
   // Časomíra
   useEffect(() => {
-    if (!respondent || submission) return;
+    if (!respondent || submission || currentRoute !== 'quiz') return;
     const interval = setInterval(() => {
       setSecondsElapsed((prev) => prev + 1);
     }, 1000);
     return () => clearInterval(interval);
-  }, [respondent, submission]);
+  }, [respondent, submission, currentRoute]);
 
   const safeIndex = Math.min(Math.max(0, currentQuestionIndex), QUESTIONS_20.length - 1);
   const currentQuestion = QUESTIONS_20[safeIndex] || QUESTIONS_20[0];
@@ -226,6 +264,16 @@ export const App: React.FC = () => {
     setSubmission(null);
   };
 
+  // Pokud je aktivní stránka pro učitele
+  if (currentRoute === 'teacher') {
+    return (
+      <TeacherPage
+        onBackToQuiz={() => navigateTo('quiz')}
+      />
+    );
+  }
+
+  // Běžné zobrazení testu pro studenty
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-800">
       {/* 1. Úvodní okno s informovaným souhlasem */}
@@ -245,7 +293,7 @@ export const App: React.FC = () => {
             submission={submission}
             questions={QUESTIONS_20}
             onRestart={handleRestart}
-            onOpenResearchHub={() => setIsResearchHubOpen(true)}
+            onOpenTeacherPortal={() => navigateTo('teacher')}
           />
         </main>
       ) : respondent ? (
@@ -256,7 +304,6 @@ export const App: React.FC = () => {
             totalQuestions={QUESTIONS_20.length}
             answeredCount={answeredCount}
             secondsElapsed={secondsElapsed}
-            onOpenResearchHub={() => setIsResearchHubOpen(true)}
             group={respondent.group}
           />
 
@@ -283,12 +330,6 @@ export const App: React.FC = () => {
         </>
       ) : null}
 
-      {/* Výzkumný analytický panel */}
-      <ResearchHubModal
-        isOpen={isResearchHubOpen}
-        onClose={() => setIsResearchHubOpen(false)}
-      />
-
       {/* Podmínky výzkumu (zobrazitelné kdykoliv z patičky) */}
       <ResearchConditionsModal
         isOpen={isConditionsOpen}
@@ -313,10 +354,11 @@ export const App: React.FC = () => {
             </button>
             <button
               type="button"
-              onClick={() => setIsResearchHubOpen(true)}
-              className="text-blue-700 hover:text-blue-900 font-semibold"
+              onClick={() => navigateTo('teacher')}
+              className="text-slate-700 hover:text-blue-700 font-semibold flex items-center gap-1 border border-slate-200 bg-slate-50 hover:bg-slate-100 px-2.5 py-1 rounded-md transition-colors"
             >
-              Výzkumný panel
+              <Lock className="w-3.5 h-3.5 text-slate-500" />
+              <span>Správa pro učitele (/ucitel)</span>
             </button>
           </div>
         </div>

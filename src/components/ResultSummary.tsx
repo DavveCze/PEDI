@@ -15,14 +15,14 @@ interface ResultSummaryProps {
   submission: QuizSubmission;
   questions: Question[];
   onRestart: () => void;
-  onOpenResearchHub: () => void;
+  onOpenTeacherPortal?: () => void;
 }
 
 export const ResultSummary: React.FC<ResultSummaryProps> = ({
   submission,
   questions,
   onRestart,
-  onOpenResearchHub,
+  onOpenTeacherPortal,
 }) => {
   const [showDetails, setShowDetails] = useState(false);
   const { score } = submission;
@@ -218,14 +218,16 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
           <span>Vyplnit znovu (Nový respondent)</span>
         </button>
 
-        <button
-          type="button"
-          onClick={onOpenResearchHub}
-          className="min-h-[48px] px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-2"
-        >
-          <Database className="w-4 h-4" />
-          <span>Výzkumný panel</span>
-        </button>
+        {onOpenTeacherPortal && (
+          <button
+            type="button"
+            onClick={onOpenTeacherPortal}
+            className="min-h-[48px] px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-2"
+          >
+            <Database className="w-4 h-4" />
+            <span>Portál učitele (/ucitel)</span>
+          </button>
+        )}
       </div>
     </div>
   );

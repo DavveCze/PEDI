@@ -1,12 +1,11 @@
 import React from 'react';
-import { Clock, CheckCircle2, Database } from 'lucide-react';
+import { Clock, CheckCircle2 } from 'lucide-react';
 
 interface QuizHeaderProps {
   currentIndex: number;
   totalQuestions: number;
   answeredCount: number;
   secondsElapsed: number;
-  onOpenResearchHub: () => void;
   group?: string;
 }
 
@@ -15,7 +14,6 @@ export const QuizHeader: React.FC<QuizHeaderProps> = ({
   totalQuestions,
   answeredCount,
   secondsElapsed,
-  onOpenResearchHub,
   group,
 }) => {
   const formatTime = (totalSeconds: number) => {
@@ -53,16 +51,6 @@ export const QuizHeader: React.FC<QuizHeaderProps> = ({
               {answeredCount}/{totalQuestions}
             </span>
           </div>
-
-          <button
-            type="button"
-            onClick={onOpenResearchHub}
-            className="p-1 sm:px-2.5 sm:py-1 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition-colors flex items-center gap-1"
-            title="Výzkumný panel"
-          >
-            <Database className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline text-xs">Panel</span>
-          </button>
         </div>
       </div>
 
