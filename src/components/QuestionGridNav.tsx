@@ -15,31 +15,31 @@ export const QuestionGridNav: React.FC<QuestionGridNavProps> = ({
   onSelectQuestion,
 }) => {
   return (
-    <div className="w-full max-w-4xl mx-auto mt-6 bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-xs">
-      <div className="flex items-center justify-between gap-4 mb-4">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-          Rychlá navigace v testu (Položky 1–{questions.length})
-        </h3>
-        <div className="flex items-center gap-4 text-xs text-slate-500">
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+    <div className="w-full max-w-3xl mx-auto bg-white rounded-2xl p-4 sm:p-5 border border-slate-300 shadow-xs">
+      <div className="flex items-center justify-between gap-3 mb-3 text-xs">
+        <span className="font-bold uppercase tracking-wider text-slate-700">
+          Přehled položek (1–{questions.length})
+        </span>
+        <div className="flex items-center gap-3 text-[11px] text-slate-600">
+          <div className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 rounded bg-blue-100 border border-blue-400" />
             <span>Zodpovězeno</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-slate-200" />
+          <div className="flex items-center gap-1">
+            <span className="w-2.5 h-2.5 rounded bg-slate-100 border border-slate-300" />
             <span>Zbývá</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full ring-2 ring-indigo-600 bg-white" />
-            <span>Aktuální</span>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-16 lg:grid-cols-23 gap-1.5 sm:gap-2">
+      {/* Grid: na mobilu 10 sloupců (2 řádky), na větších 10/20 sloupců */}
+      <div className="grid grid-cols-10 gap-1.5 sm:gap-2">
         {questions.map((q, idx) => {
           const ans = answers[q.id];
-          const isAnswered = ans !== undefined && ans !== '' && (!Array.isArray(ans) || ans.length > 0);
+          const isAnswered =
+            ans !== undefined &&
+            ans !== '' &&
+            (!Array.isArray(ans) || ans.length > 0);
           const isCurrent = idx === currentIndex;
 
           return (
@@ -47,14 +47,14 @@ export const QuestionGridNav: React.FC<QuestionGridNavProps> = ({
               key={q.id}
               type="button"
               onClick={() => onSelectQuestion(idx)}
-              className={`h-8 rounded-lg text-xs font-semibold transition-all flex items-center justify-center ${
+              className={`h-9 sm:h-10 rounded-lg text-xs font-bold transition-all flex items-center justify-center ${
                 isCurrent
-                  ? 'bg-indigo-600 text-white ring-2 ring-indigo-600 ring-offset-2 scale-105 shadow-sm'
+                  ? 'bg-blue-700 text-white ring-2 ring-blue-700 ring-offset-1'
                   : isAnswered
-                  ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-blue-50 text-blue-900 border border-blue-300 hover:bg-blue-100'
+                  : 'bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100'
               }`}
-              title={`Položka ${idx + 1} (Otázka Q${q.id}): ${q.theme} [${q.domain}] (${isAnswered ? 'Zodpovězeno' : 'Nezodpovězeno'})`}
+              title={`Položka ${idx + 1}: ${q.theme} [${q.domain}]`}
             >
               {idx + 1}
             </button>

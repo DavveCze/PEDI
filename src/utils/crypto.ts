@@ -46,7 +46,7 @@ export async function encodeQuizResult(submission: {
     grp: submission.respondent.group || 'Standard',
     gen: submission.respondent.gender || 'unspecified',
     age: submission.respondent.age || 19,
-    mode: submission.respondent.quizMode,
+    mode: 'standard_20',
     qids: submission.questionIds,
     ts: submission.completedAt,
     dur: submission.timeSpentSeconds,

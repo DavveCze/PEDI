@@ -14,7 +14,7 @@ export type DiagnosticDomain =
 
 export interface Question {
   id: number;
-  module: 'Mediální gramotnost' | 'IT Fitness';
+  module?: 'Mediální gramotnost' | 'IT Fitness';
   domain: DiagnosticDomain;
   theme: string;
   prompt: string;
@@ -28,8 +28,6 @@ export interface Question {
   images: string[];
 }
 
-export type QuizMode = 'standard_20' | 'random_20' | 'full_46';
-
 export interface RespondentInfo {
   respondentId: string;
   grade: string;
@@ -37,8 +35,8 @@ export interface RespondentInfo {
   gender?: 'female' | 'male' | 'other' | 'unspecified';
   age?: number;
   consentGiven: boolean;
+  consentTimestamp: string;
   startTime: string;
-  quizMode: QuizMode;
 }
 
 export interface DomainScore {

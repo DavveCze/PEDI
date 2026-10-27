@@ -1,19 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import confetti from 'canvas-confetti';
+import React, { useState } from 'react';
 import {
-  Trophy,
   CheckCircle2,
   XCircle,
   BookOpen,
   ChevronDown,
   ChevronUp,
   RotateCcw,
-  Sparkles,
-  Newspaper,
-  Search,
-  ShieldCheck,
-  Laptop,
-  Cpu,
+  Database,
 } from 'lucide-react';
 import { Question, QuizSubmission, DiagnosticDomain } from '../types/quiz';
 import { ResultTokenBox } from './ResultTokenBox';
@@ -25,14 +18,6 @@ interface ResultSummaryProps {
   onOpenResearchHub: () => void;
 }
 
-const DOMAIN_ICONS: Record<DiagnosticDomain, React.ReactNode> = {
-  'Mediální obsah': <Newspaper className="w-4 h-4 text-indigo-600" />,
-  'Ověřování informací': <Search className="w-4 h-4 text-blue-600" />,
-  'Bezpečnost a soukromí': <ShieldCheck className="w-4 h-4 text-emerald-600" />,
-  'Digitální nástroje': <Laptop className="w-4 h-4 text-amber-600" />,
-  'Kritické využití AI': <Cpu className="w-4 h-4 text-purple-600" />,
-};
-
 export const ResultSummary: React.FC<ResultSummaryProps> = ({
   submission,
   questions,
@@ -40,46 +25,33 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
   onOpenResearchHub,
 }) => {
   const [showDetails, setShowDetails] = useState(false);
-
-  useEffect(() => {
-    try {
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-      });
-    } catch {
-      // ignore
-    }
-  }, []);
-
   const { score } = submission;
 
   const getDiagnosticVerdict = (pct: number) => {
     if (pct >= 85) {
       return {
-        level: 'Vynikající úroveň (Expert)',
-        color: 'text-emerald-700 bg-emerald-50 border-emerald-200',
-        desc: 'Prokazujete vysoce rozvinuté kritické myšlení, precizní detekci mediálních manipulací i pokročilé povědomí o kybernetické bezpečnosti a práci s AI.',
+        level: 'Výborná úroveň (Nadprůměr)',
+        color: 'bg-emerald-50 text-emerald-900 border-emerald-300',
+        desc: 'Prokazujete vysoce rozvinuté kritické myšlení, spolehlivou detekci manipulací a vysoké povědomí o kybernetické bezpečnosti a limitech AI.',
       };
     }
     if (pct >= 70) {
       return {
         level: 'Velmi dobrá úroveň (Pokročilý)',
-        color: 'text-indigo-700 bg-indigo-50 border-indigo-200',
-        desc: 'Úspěšně rozpoznáváte dezinformační formáty a bezpečnostní rizika. Pozornost doporučujeme věnovat detailnímu ověřování zdrojů a limitů AI modelů.',
+        color: 'bg-blue-50 text-blue-900 border-blue-300',
+        desc: 'Úspěšně rozpoznáváte většinu dezinformačních technik a bezpečnostních rizik. Pozornost doporučujeme věnovat detailnímu ověřování metadat a limitům AI modelů.',
       };
     }
     if (pct >= 50) {
       return {
         level: 'Standardní úroveň (Průměr)',
-        color: 'text-amber-700 bg-amber-50 border-amber-200',
-        desc: 'Základní principy mediální a digitální gramotnosti ovládáte. U komplikovanějších úloh (např. sanitizace dat, Passkeys, prostorové halucinace AI) se však objevily nepřesnosti.',
+        color: 'bg-amber-50 text-amber-900 border-amber-300',
+        desc: 'Základní principy mediální a digitální gramotnosti ovládáte. V náročnějších situacích (např. sanitizace dat, Passkeys, ověřování syntetických obrazů) se objevily nepřesnosti.',
       };
     }
     return {
-      level: 'Rozvíjející se úroveň (Vyžaduje posílení)',
-      color: 'text-rose-700 bg-rose-50 border-rose-200',
+      level: 'Základní úroveň (Vyžaduje posílení)',
+      color: 'bg-rose-50 text-rose-900 border-rose-300',
       desc: 'Výsledky indikují prostor pro systematické posílení mediální gramotnosti a digitální bezpečnosti v rámci středoškolského vzdělávání.',
     };
   };
@@ -107,59 +79,50 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
   ];
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6 pb-16">
-      {/* Hlavní skóre karta */}
-      <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-xl shadow-slate-200/50 text-center relative overflow-hidden">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200/60 rounded-full text-xs font-semibold mb-4">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-          <span>Diagnostické vyhodnocení dokončeno ({questions.length} položek)</span>
-        </div>
-
-        <div className="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-amber-400 to-amber-500 text-white flex items-center justify-center shadow-lg shadow-amber-200 mb-4">
-          <Trophy className="w-10 h-10" />
-        </div>
-
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          {score.totalScore} <span className="text-xl sm:text-2xl text-slate-400 font-semibold">/ {score.maxScore} bodů</span>
-        </h1>
-        <div className="text-lg font-bold text-indigo-600 mt-1">
-          Úspěšnost: {score.percentage} %
+    <div className="w-full max-w-3xl mx-auto space-y-5 pb-16">
+      {/* Hlavní skóre karta (střízlivý styl) */}
+      <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-300 shadow-xs">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+          <div>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
+              Výsledek diagnostického šetření
+            </span>
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mt-0.5">
+              Protokol hodnocení respondenta
+            </h1>
+          </div>
+          <div className="text-right">
+            <span className="text-2xl sm:text-3xl font-black text-slate-900">
+              {score.totalScore}
+            </span>
+            <span className="text-sm text-slate-500 font-semibold"> / {score.maxScore} b</span>
+            <div className="text-xs font-bold text-blue-700">{score.percentage} %</div>
+          </div>
         </div>
 
         {/* Diagnostický verdikt */}
-        <div className={`mt-6 p-5 rounded-2xl border text-left max-w-2xl mx-auto ${verdict.color}`}>
-          <div className="text-xs font-bold uppercase tracking-wider mb-1 opacity-80">
-            Diagnostická interpretace
-          </div>
-          <div className="text-base font-bold mb-1.5">{verdict.level}</div>
-          <div className="text-xs sm:text-sm leading-relaxed">{verdict.desc}</div>
+        <div className={`mt-5 p-4 rounded-xl border text-xs sm:text-sm leading-relaxed ${verdict.color}`}>
+          <div className="font-bold text-sm mb-1">{verdict.level}</div>
+          <p>{verdict.desc}</p>
         </div>
 
-        {/* 5 diagnostických oblastí */}
-        <div className="mt-8 pt-6 border-t border-slate-100 max-w-2xl mx-auto text-left">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
-            Rozpad úspěšnosti podle 5 diagnostických oblastí
-          </h3>
-          <div className="space-y-3">
+        {/* Rozpad podle 5 oblastí */}
+        <div className="mt-5 space-y-2.5">
+          <div className="text-xs font-bold uppercase tracking-wider text-slate-600">
+            Výsledky podle diagnostických oblastí
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
             {domains.map((dom) => {
               const domData = score.domainScores?.[dom] || { score: 0, max: 0, percentage: 0 };
               if (domData.max === 0) return null;
               return (
-                <div key={dom} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-                  <div className="flex items-center justify-between text-xs font-semibold text-slate-700 mb-1.5">
-                    <span className="flex items-center gap-2">
-                      {DOMAIN_ICONS[dom]}
-                      {dom}
-                    </span>
-                    <span className="font-bold text-slate-900">
-                      {domData.score} / {domData.max} b ({domData.percentage} %)
-                    </span>
+                <div key={dom} className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between">
+                  <div>
+                    <div className="font-semibold text-slate-900">{dom}</div>
+                    <div className="text-slate-500 text-[11px]">Úspěšnost: {domData.percentage} %</div>
                   </div>
-                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-indigo-600 rounded-full transition-all duration-500"
-                      style={{ width: `${domData.percentage}%` }}
-                    />
+                  <div className="text-right font-bold text-slate-900 text-sm">
+                    {domData.score} / {domData.max} b
                   </div>
                 </div>
               );
@@ -168,78 +131,73 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
         </div>
       </div>
 
-      {/* Šifrovaný kód pro odevzdání */}
+      {/* Šifrovaný kód výsledku pro odevzdání */}
       <ResultTokenBox submission={submission} />
 
-      {/* Podrobný rozbor položek */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
+      {/* Detailní rozbor odpovědí */}
+      <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-300 shadow-xs">
         <button
           type="button"
           onClick={() => setShowDetails(!showDetails)}
-          className="w-full flex items-center justify-between text-left font-bold text-slate-900 text-base group"
+          className="w-full flex items-center justify-between text-left font-bold text-slate-900 text-sm sm:text-base"
         >
-          <div className="flex items-center gap-2.5">
-            <BookOpen className="w-5 h-5 text-indigo-600" />
-            <span>Podrobný rozbor vyřešených položek ({questions.length})</span>
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-slate-700" />
+            <span>Podrobný přehled odpovědí ({questions.length} položek)</span>
           </div>
-          <div className="p-1 rounded-xl bg-slate-100 group-hover:bg-slate-200 transition-colors">
-            {showDetails ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          <div className="p-1 rounded bg-slate-100 text-slate-600">
+            {showDetails ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </div>
         </button>
 
         {showDetails && (
-          <div className="mt-6 pt-6 border-t border-slate-100 space-y-4 animate-in fade-in duration-300">
+          <div className="mt-5 pt-5 border-t border-slate-200 space-y-3">
             {questions.map((q, idx) => {
               const correct = isQuestionCorrect(q);
               const userAns = submission.answers[q.id];
               return (
                 <div
                   key={q.id}
-                  className={`p-4 rounded-2xl border text-sm transition-all ${
+                  className={`p-3.5 rounded-xl border text-xs sm:text-sm ${
                     correct
-                      ? 'bg-emerald-50/40 border-emerald-200/70'
-                      : 'bg-rose-50/40 border-rose-200/70'
+                      ? 'bg-emerald-50/40 border-emerald-200'
+                      : 'bg-rose-50/40 border-rose-200'
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-slate-900">
-                        Položka {idx + 1} (Q{q.id}): {q.theme}
-                      </span>
-                      <span className="text-xs px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600">
-                        {q.domain}
-                      </span>
-                    </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-bold text-slate-900">
+                      Položka {idx + 1}: {q.theme}
+                    </span>
                     {correct ? (
-                      <span className="inline-flex items-center gap-1 text-emerald-700 font-bold text-xs">
-                        <CheckCircle2 className="w-4 h-4" /> Správně (+1 b)
+                      <span className="inline-flex items-center gap-1 text-emerald-800 font-bold text-xs">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Správně
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 text-rose-700 font-bold text-xs">
-                        <XCircle className="w-4 h-4" /> Chybně (0 b)
+                      <span className="inline-flex items-center gap-1 text-rose-800 font-bold text-xs">
+                        <XCircle className="w-3.5 h-3.5" /> Chybně
                       </span>
                     )}
                   </div>
 
-                  <p className="mt-2 text-slate-700 text-xs sm:text-sm font-medium">{q.prompt}</p>
+                  <p className="mt-1 text-slate-700 text-xs">{q.prompt}</p>
 
-                  <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                    <div className="p-2.5 rounded-xl bg-white/80 border border-slate-200/80">
-                      <span className="text-slate-400 block font-semibold mb-0.5">Vaše odpověď:</span>
+                  <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs">
+                    <div className="p-2 bg-white rounded border border-slate-200">
+                      <span className="text-slate-400 block text-[10px] font-semibold">Vaše volba:</span>
                       <span className={correct ? 'text-emerald-800 font-bold' : 'text-rose-800 font-bold'}>
-                        {Array.isArray(userAns) ? userAns.join('; ') : userAns ?? '(Nezodpovězeno)'}
+                        {Array.isArray(userAns) ? userAns.join('; ') : userAns ?? '(Nevyplněno)'}
                       </span>
                     </div>
-                    <div className="p-2.5 rounded-xl bg-white/80 border border-slate-200/80">
-                      <span className="text-slate-400 block font-semibold mb-0.5">Správné řešení:</span>
+                    <div className="p-2 bg-white rounded border border-slate-200">
+                      <span className="text-slate-400 block text-[10px] font-semibold">Správné řešení:</span>
                       <span className="text-emerald-800 font-bold">
                         {Array.isArray(q.correctAnswer) ? q.correctAnswer.join('; ') : q.correctAnswer}
                       </span>
                     </div>
                   </div>
 
-                  <div className="mt-2.5 text-xs text-slate-500 bg-white/50 p-2.5 rounded-xl border border-slate-200/50">
-                    <strong className="text-indigo-900">Diagnostický cíl / Odůvodnění: </strong>
+                  <div className="mt-2 text-xs text-slate-600 bg-white/70 p-2 rounded border border-slate-200">
+                    <strong>Odůvodnění: </strong>
                     {q.explanation}
                   </div>
                 </div>
@@ -249,24 +207,24 @@ export const ResultSummary: React.FC<ResultSummaryProps> = ({
         )}
       </div>
 
-      {/* Ovládací tlačítka */}
-      <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
+      {/* Spodní akční tlačítka */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 pt-2">
         <button
           type="button"
           onClick={onRestart}
-          className="px-6 py-3 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm border border-slate-200 shadow-xs transition-all flex items-center gap-2"
+          className="min-h-[48px] px-5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-semibold border border-slate-300 shadow-xs flex items-center justify-center gap-2"
         >
           <RotateCcw className="w-4 h-4" />
-          <span>Vyplnit test znovu (Nový respondent)</span>
+          <span>Vyplnit znovu (Nový respondent)</span>
         </button>
 
         <button
           type="button"
           onClick={onOpenResearchHub}
-          className="px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs sm:text-sm shadow-md shadow-indigo-200 transition-all flex items-center gap-2"
+          className="min-h-[48px] px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white text-xs sm:text-sm font-semibold flex items-center justify-center gap-2"
         >
-          <Trophy className="w-4 h-4" />
-          <span>Otevřít Výzkumný analytický panel</span>
+          <Database className="w-4 h-4" />
+          <span>Výzkumný panel</span>
         </button>
       </div>
     </div>

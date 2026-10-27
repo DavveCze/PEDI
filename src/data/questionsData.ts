@@ -16,9 +16,15 @@ export const DOMAIN_DESCRIPTIONS: Record<DiagnosticDomain, string> = {
   'Kritické využití AI': 'Ověření výstupu AI, rozpoznání chybné informace a uvědomění limitů automaticky vytvořeného obsahu.',
 };
 
-export const DEFAULT_20_QUESTION_IDS: number[] = [1, 2, 4, 8, 15, 3, 7, 9, 10, 6, 19, 29, 31, 34, 35, 40, 44, 13, 20, 22];
-
-export const QUESTIONS_DATA: Question[] = [
+/**
+ * Standardní reprezentativní výběr 20 diagnostických položek:
+ * 5 položek: Mediální obsah
+ * 4 položky: Ověřování informací
+ * 5 položek: Bezpečnost a soukromí
+ * 3 položky: Digitální nástroje
+ * 3 položky: Kritické využití AI
+ */
+export const QUESTIONS_20: Question[] = [
   {
     "id": 1,
     "module": "Mediální gramotnost",
@@ -59,24 +65,6 @@ export const QUESTIONS_DATA: Question[] = [
     "domain": "Mediální obsah"
   },
   {
-    "id": 3,
-    "module": "Mediální gramotnost",
-    "theme": "Falešný profil na sociálních sítích",
-    "prompt": "Který z twitterových příspěvků níže nenapsal předseda hnutí ANO Andrej Babiš, ale někdo, kdo se za něj vydává?",
-    "scenario": "Porovnejte vizuální styl, oficiální rukojeti (@handle) a obsah komunikace.",
-    "type": "single_choice",
-    "options": [
-      "tweet 1",
-      "tweet 2"
-    ],
-    "correctAnswer": "tweet 2",
-    "explanation": "Ověřování rukojeti (@AndrejBabiis s dvěma i), data vytvoření a stylu komunikace.",
-    "images": [
-      "./images/img-003.png"
-    ],
-    "domain": "Ověřování informací"
-  },
-  {
     "id": 4,
     "module": "Mediální gramotnost",
     "theme": "Zavádějící graf (ceny benzínu)",
@@ -96,39 +84,60 @@ export const QUESTIONS_DATA: Question[] = [
     "domain": "Mediální obsah"
   },
   {
-    "id": 5,
+    "id": 8,
     "module": "Mediální gramotnost",
-    "theme": "Falešné citáty",
-    "prompt": "Který z těchto dvou citátů Mahátma Gándhí určitě neřekl?",
-    "scenario": "Posouzení historické věrohodnosti a anakronismů ve výrocích historických osobností.",
+    "theme": "Clickbait",
+    "prompt": "Který z titulků níže bychom mohli označit pojmem clickbait?",
+    "scenario": "Posuďte míru senzacechtivosti a informační mezery v titulcích.",
     "type": "single_choice",
     "options": [
-      "citát 1",
-      "citát 2"
+      "1 (Prezident Pavel přijal na Hradě české olympioniky...)",
+      "2 (Další tragédie v zámoří. Jágrova bývalého spoluhráče...)",
+      "3 (V Česku se o víkendu ochladí, na horách může napadnout sníh)"
     ],
-    "correctAnswer": "citát 2",
-    "explanation": "Ověřování historických zdrojů a atribuce výroků (citát 2 zmiňuje notebooky a moderní technologie).",
+    "correctAnswer": "2 (Další tragédie v zámoří. Jágrova bývalého spoluhráče...)",
+    "explanation": "Rozpoznání manipulativních titulků cílících na zvědavost a emoce se zamlčenou klíčovou informací.",
     "images": [
-      "./images/img-005.png"
+      "./images/img-014.png"
     ],
-    "domain": "Ověřování informací"
+    "domain": "Mediální obsah"
   },
   {
-    "id": 6,
+    "id": 15,
     "module": "Mediální gramotnost",
-    "theme": "Zabezpečení online účtů",
-    "prompt": "Která z následujících technik může pomoci zvýšit zabezpečení vašich online účtů?",
+    "theme": "Neoznačená reklama",
+    "prompt": "V čem je tento příspěvek na Instagramu problematický?",
     "type": "single_choice",
     "options": [
-      "použití stejného hesla pro různé účty, ale s různými čísly na konci",
-      "použití dvou kroků při přihlašování, například heslo a kód zaslaný na mobilní telefon",
-      "pravidelná změna hesla každých několik měsíců na lehce zapamatovatelné slovo",
-      "použití krátkých hesel s kombinací písmen a čísel"
+      "Reklama je na Instagramu zakázaná.",
+      "Příspěvek je v pořádku.",
+      "Propaguje zakázané látky.",
+      "Jedná se o neoznačenou reklamu."
     ],
-    "correctAnswer": "použití dvou kroků při přihlašování, například heslo a kód zaslaný na mobilní telefon",
-    "explanation": "Znalost principu dvoufaktorové autentizace (2FA/MFA).",
-    "images": [],
-    "domain": "Bezpečnost a soukromí"
+    "correctAnswer": "Jedná se o neoznačenou reklamu.",
+    "explanation": "Povědomí o etických a zákonných povinnostech označovat sponzorovaný obsah influencery.",
+    "images": [
+      "./images/img-019.png"
+    ],
+    "domain": "Mediální obsah"
+  },
+  {
+    "id": 3,
+    "module": "Mediální gramotnost",
+    "theme": "Falešný profil na sociálních sítích",
+    "prompt": "Který z twitterových příspěvků níže nenapsal předseda hnutí ANO Andrej Babiš, ale někdo, kdo se za něj vydává?",
+    "scenario": "Porovnejte vizuální styl, oficiální rukojeti (@handle) a obsah komunikace.",
+    "type": "single_choice",
+    "options": [
+      "tweet 1",
+      "tweet 2"
+    ],
+    "correctAnswer": "tweet 2",
+    "explanation": "Ověřování rukojeti (@AndrejBabiis s dvěma i), data vytvoření a stylu komunikace.",
+    "images": [
+      "./images/img-003.png"
+    ],
+    "domain": "Ověřování informací"
   },
   {
     "id": 7,
@@ -151,25 +160,6 @@ export const QUESTIONS_DATA: Question[] = [
       "./images/img-006.png"
     ],
     "domain": "Ověřování informací"
-  },
-  {
-    "id": 8,
-    "module": "Mediální gramotnost",
-    "theme": "Clickbait",
-    "prompt": "Který z titulků níže bychom mohli označit pojmem clickbait?",
-    "scenario": "Posuďte míru senzacechtivosti a informační mezery v titulcích.",
-    "type": "single_choice",
-    "options": [
-      "1 (Prezident Pavel přijal na Hradě české olympioniky...)",
-      "2 (Další tragédie v zámoří. Jágrova bývalého spoluhráče...)",
-      "3 (V Česku se o víkendu ochladí, na horách může napadnout sníh)"
-    ],
-    "correctAnswer": "2 (Další tragédie v zámoří. Jágrova bývalého spoluhráče...)",
-    "explanation": "Rozpoznání manipulativních titulků cílících na zvědavost a emoce se zamlčenou klíčovou informací.",
-    "images": [
-      "./images/img-014.png"
-    ],
-    "domain": "Mediální obsah"
   },
   {
     "id": 9,
@@ -213,145 +203,21 @@ export const QUESTIONS_DATA: Question[] = [
     "domain": "Ověřování informací"
   },
   {
-    "id": 11,
+    "id": 6,
     "module": "Mediální gramotnost",
-    "theme": "Konfirmační zkreslení",
-    "prompt": "CONFIRMATION BIAS, česky KONFIRMAČNÍ ZKRESLENÍ, je tendence jedince:",
+    "theme": "Zabezpečení online účtů",
+    "prompt": "Která z následujících technik může pomoci zvýšit zabezpečení vašich online účtů?",
     "type": "single_choice",
     "options": [
-      "Upřednostňovat informace, které podporují jeho vlastní názor.",
-      "Měnit názory podle informace, kterou momentálně zachytil.",
-      "Vyhledávat a přesvědčovat jedince s opačnými názory."
+      "použití stejného hesla pro různé účty, ale s různými čísly na konci",
+      "použití dvou kroků při přihlašování, například heslo a kód zaslaný na mobilní telefon",
+      "pravidelná změna hesla každých několik měsíců na lehce zapamatovatelné slovo",
+      "použití krátkých hesel s kombinací písmen a čísel"
     ],
-    "correctAnswer": "Upřednostňovat informace, které podporují jeho vlastní názor.",
-    "explanation": "Znalost klíčového kognitivního zkreslení ovlivňujícího interpretaci zpráv.",
+    "correctAnswer": "použití dvou kroků při přihlašování, například heslo a kód zaslaný na mobilní telefon",
+    "explanation": "Znalost principu dvoufaktorové autentizace (2FA/MFA).",
     "images": [],
-    "domain": "Ověřování informací"
-  },
-  {
-    "id": 12,
-    "module": "Mediální gramotnost",
-    "theme": "Koncesionářské poplatky",
-    "prompt": "Česká televize a Český rozhlas získávají většinu příjmů z takzvaných koncesionářských poplatků. Co je to za poplatky?",
-    "type": "single_choice",
-    "options": [
-      "Poplatky, které platí provozovatelé komerčních médií, aby podpořili veřejnoprávní média.",
-      "Poplatky, které platí každý měsíc všichni občané ČR.",
-      "Poplatky, které platí domácnosti a firmy, jež vlastní televizní nebo rozhlasové přijímače."
-    ],
-    "correctAnswer": "Poplatky, které platí domácnosti a firmy, jež vlastní televizní nebo rozhlasové přijímače.",
-    "explanation": "Chápání principu financování a nezávislosti veřejnoprávních médií.",
-    "images": [],
-    "domain": "Mediální obsah"
-  },
-  {
-    "id": 13,
-    "module": "Mediální gramotnost",
-    "theme": "Syntetický obraz (AI)",
-    "prompt": "Kdy a kde byl pořízen tento obrázek zasněžené dálnice se stojícími auty?",
-    "scenario": "Příspěvek na sociální síti tvrdící: \"Německo dnešních dnů a elektromobily...\".",
-    "type": "single_choice",
-    "options": [
-      "v Německu v roce 2023, jak tvrdí autor příspěvku",
-      "v USA při sněhové bouři v roce 2011",
-      "nikde, obrázek je vygenerovaný umělou inteligencí",
-      "nikde, obrázek pochází z filmu"
-    ],
-    "correctAnswer": "nikde, obrázek je vygenerovaný umělou inteligencí",
-    "explanation": "Identifikace artefaktů generativních modelů (Midjourney/DALL-E) a ověření zprávy.",
-    "images": [
-      "./images/img-018.png"
-    ],
-    "domain": "Kritické využití AI"
-  },
-  {
-    "id": 14,
-    "module": "Mediální gramotnost",
-    "theme": "Product placement",
-    "prompt": "Co je to Product placement?",
-    "type": "single_choice",
-    "options": [
-      "kampaň na uvedení nového produktu na trh",
-      "samostatná inzertní stránka v novinách a časopisech",
-      "Forma skryté reklamy, kdy je inzerovaný produkt umístěn do uměleckého díla.",
-      "Rozhraní grafického programu pro tvorbu inzerátů"
-    ],
-    "correctAnswer": "Forma skryté reklamy, kdy je inzerovaný produkt umístěn do uměleckého díla.",
-    "explanation": "Porozumění komerčním a marketingovým formátům v audiovizuální tvorbě.",
-    "images": [],
-    "domain": "Mediální obsah"
-  },
-  {
-    "id": 15,
-    "module": "Mediální gramotnost",
-    "theme": "Neoznačená reklama",
-    "prompt": "V čem je tento příspěvek na Instagramu problematický?",
-    "type": "single_choice",
-    "options": [
-      "Reklama je na Instagramu zakázaná.",
-      "Příspěvek je v pořádku.",
-      "Propaguje zakázané látky.",
-      "Jedná se o neoznačenou reklamu."
-    ],
-    "correctAnswer": "Jedná se o neoznačenou reklamu.",
-    "explanation": "Povědomí o etických a zákonných povinnostech označovat sponzorovaný obsah influencery.",
-    "images": [
-      "./images/img-019.png"
-    ],
-    "domain": "Mediální obsah"
-  },
-  {
-    "id": 16,
-    "module": "Mediální gramotnost",
-    "theme": "Vlastnictví sociálních sítí",
-    "prompt": "Kdo vlastní společnost Instagram?",
-    "type": "single_choice",
-    "options": [
-      "Meta (dříve Facebook)",
-      "Google",
-      "TikTok",
-      "Akcionářem je každý uživatel Instagramu."
-    ],
-    "correctAnswer": "Meta (dříve Facebook)",
-    "explanation": "Znalost mediálního vlastnictví a technologických konglomerátů.",
-    "images": [],
-    "domain": "Mediální obsah"
-  },
-  {
-    "id": 17,
-    "module": "Mediální gramotnost",
-    "theme": "Veřejnoprávní služba",
-    "prompt": "V čem se liší veřejnoprávní Česká televize (ČT) od soukromých televizních stanic? (Vyberte všechny správné odpovědi)",
-    "type": "multiple_choice",
-    "options": [
-      "ČT musí informovat pozitivně o krocích vlády.",
-      "ČT musí zaměstnávat v redakci zástupce všech menšin žijících v ČR.",
-      "ČT musí vytvářet vyváženou nabídku pořadů pro všechny skupiny obyvatel (zástupce menšin, různých náboženských vyznání apod.).",
-      "ČT musí přispívat k právnímu povědomí obyvatel ČR a rozvíjet jejich kulturní identitu."
-    ],
-    "correctAnswer": [
-      "ČT musí vytvářet vyváženou nabídku pořadů pro všechny skupiny obyvatel (zástupce menšin, různých náboženských vyznání apod.).",
-      "ČT musí přispívat k právnímu povědomí obyvatel ČR a rozvíjet jejich kulturní identitu."
-    ],
-    "explanation": "Znalost zákona o ČT a role veřejnoprávního vysílání v demokratické společnosti.",
-    "images": [],
-    "domain": "Mediální obsah"
-  },
-  {
-    "id": 18,
-    "module": "Mediální gramotnost",
-    "theme": "Deepfake",
-    "prompt": "Co je to deepfake?",
-    "type": "single_choice",
-    "options": [
-      "Jakákoliv poplašná zpráva, která může vyvolat paniku.",
-      "Uživatelé sociálních sítí, kteří mají více než 10 falešných profilů.",
-      "Produkce velmi věrohodně vypadajících videí, obrázků nebo zvukových souborů, které jsou vydávány za reálné."
-    ],
-    "correctAnswer": "Produkce velmi věrohodně vypadajících videí, obrázků nebo zvukových souborů, které jsou vydávány za reálné.",
-    "explanation": "Povědomí o rizicích syntetických audiovizuálních médií.",
-    "images": [],
-    "domain": "Kritické využití AI"
+    "domain": "Bezpečnost a soukromí"
   },
   {
     "id": 19,
@@ -373,166 +239,6 @@ export const QUESTIONS_DATA: Question[] = [
     "domain": "Bezpečnost a soukromí"
   },
   {
-    "id": 20,
-    "module": "IT Fitness",
-    "theme": "Trasa vlaku",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Na mapě č. 2 na zakreslené trase vlaku EC 130 Bathory jsou zobrazena i města, ve kterých vlak nezastavuje.\"",
-    "scenario": "Monika nechala AI vygenerovat schématickou mapu tras vlaků IC 112 Silesia, RJ 272 Metropolitan, EC 102 Polonia a EC 130 Bathory.",
-    "type": "true_false",
-    "options": [
-      "PRAVDA",
-      "NEPRAVDA"
-    ],
-    "correctAnswer": "PRAVDA",
-    "explanation": "Kritické posouzení AI generované schématické mapy vůči reálnému jízdnímu řádu.",
-    "images": [
-      "./images/img-024.png"
-    ],
-    "domain": "Kritické využití AI"
-  },
-  {
-    "id": 21,
-    "module": "IT Fitness",
-    "theme": "Trasa vlaku",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Na mapě č. 2 lze vidět celou trasu vlaku EC 130 Bathory.\"",
-    "scenario": "Prověřte počáteční a koncovou stanici vlaku EC 130 Bathory na schématu.",
-    "type": "true_false",
-    "options": [
-      "PRAVDA",
-      "NEPRAVDA"
-    ],
-    "correctAnswer": "NEPRAVDA",
-    "explanation": "Ověření úplnosti dat (spoj vede až do Polska, zobrazen je jen fragment).",
-    "images": [
-      "./images/img-024.png"
-    ],
-    "domain": "Kritické využití AI"
-  },
-  {
-    "id": 22,
-    "module": "IT Fitness",
-    "theme": "Trasa vlaku",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Mapa č. 2 neodpovídá skutečné geografické orientaci – například Budapešť se na skutečné mapě nachází spíše jihovýchodním směrem od Bratislavy.\"",
-    "scenario": "Posouzení geografických relací a halucinací generativních modelů.",
-    "type": "true_false",
-    "options": [
-      "PRAVDA",
-      "NEPRAVDA"
-    ],
-    "correctAnswer": "PRAVDA",
-    "explanation": "Detekce prostorových chyb a halucinací generativních modelů.",
-    "images": [
-      "./images/img-024.png"
-    ],
-    "domain": "Kritické využití AI"
-  },
-  {
-    "id": 23,
-    "module": "IT Fitness",
-    "theme": "Dezinformace (EDMO)",
-    "prompt": "Na snímku číslo 20 prezentace o dezinformacích jsou uvedeny národní zdroje pro ověřování faktů. Který zdroj je uveden pro Chorvatsko?",
-    "scenario": "Prezentace \"How to spot and fight disinformation\" sítě EDMO.",
-    "type": "single_choice",
-    "options": [
-      "ADMO",
-      "CEDMO",
-      "MEDDMO",
-      "HDMO"
-    ],
-    "correctAnswer": "ADMO",
-    "explanation": "Schopnost dohledat evropské fact-checkingové sítě (Adria Digital Media Observatory).",
-    "images": [
-      "./images/img-027.png"
-    ],
-    "domain": "Ověřování informací"
-  },
-  {
-    "id": 24,
-    "module": "IT Fitness",
-    "theme": "WiFi4EU",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Mobilní aplikace umožňuje přístup k 7 200 hotspotům.\"",
-    "scenario": "Oficiální portál iniciativy Evropské unie WiFi4EU.",
-    "externalUrl": "https://hadea.ec.europa.eu/programmes/connecting-europe-facility/wifi4eu_en",
-    "externalUrlLabel": "Otevřít stránku WiFi4EU",
-    "type": "true_false",
-    "options": [
-      "PRAVDA",
-      "NEPRAVDA"
-    ],
-    "correctAnswer": "NEPRAVDA",
-    "explanation": "Rozlišení počtu zapojených obcí (7 200) od počtu hotspotů (>90 000).",
-    "images": [],
-    "domain": "Ověřování informací"
-  },
-  {
-    "id": 25,
-    "module": "IT Fitness",
-    "theme": "WiFi4EU",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"PDF s nejčastějšími dotazy ve francouzštině má 36 stran.\"",
-    "scenario": "Hledání a ověřování v sekci FAQ v různých jazykových mutacích.",
-    "externalUrl": "https://hadea.ec.europa.eu/programmes/connecting-europe-facility/wifi4eu_en",
-    "externalUrlLabel": "Otevřít stránku WiFi4EU",
-    "type": "true_false",
-    "options": [
-      "PRAVDA",
-      "NEPRAVDA"
-    ],
-    "correctAnswer": "PRAVDA",
-    "explanation": "Přesné vyhledávání v dokumentových metadatech na portálu EU.",
-    "images": [],
-    "domain": "Ověřování informací"
-  },
-  {
-    "id": 26,
-    "module": "IT Fitness",
-    "theme": "WiFi4EU",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Iniciativa WiFi4EU poskytuje občanům bezplatný přístup k Wi-Fi na veřejných místech.\"",
-    "scenario": "Čtení s porozuměním z oficiálního webu instituce.",
-    "externalUrl": "https://hadea.ec.europa.eu/programmes/connecting-europe-facility/wifi4eu_en",
-    "externalUrlLabel": "Otevřít stránku WiFi4EU",
-    "type": "true_false",
-    "options": [
-      "PRAVDA",
-      "NEPRAVDA"
-    ],
-    "correctAnswer": "PRAVDA",
-    "explanation": "Čtení s porozuměním z oficiálního webu instituce.",
-    "images": [],
-    "domain": "Ověřování informací"
-  },
-  {
-    "id": 27,
-    "module": "IT Fitness",
-    "theme": "Citlivé údaje",
-    "prompt": "Zabezpečí data? \"Ve sloupci s citlivými údaji v tabulkovém procesoru nastavíme bílou barvu výplně a bílou barvu písma. Tabulku uložíme a pošleme ubytovacímu zařízení e-mailem.\"",
-    "scenario": "Odesílání citlivých osobních údajů třetím stranám.",
-    "type": "secure_unsecure",
-    "options": [
-      "ZABEZPEČÍ",
-      "NEZABEZPEČÍ"
-    ],
-    "correctAnswer": "NEZABEZPEČÍ",
-    "explanation": "Rozlišení vizuálního maskování a skutečného odstranění dat (data v buňkách stále existují).",
-    "images": [],
-    "domain": "Bezpečnost a soukromí"
-  },
-  {
-    "id": 28,
-    "module": "IT Fitness",
-    "theme": "Citlivé údaje",
-    "prompt": "Zabezpečí data? \"Ve sloupci s citlivými údaji v tabulkovém procesoru nastavíme černou barvu výplně a černou barvu písma. Tabulku uložíme do PDF a pošleme ubytovacímu zařízení e-mailem.\"",
-    "scenario": "Export maskované tabulky do needitovatelného formátu PDF.",
-    "type": "secure_unsecure",
-    "options": [
-      "ZABEZPEČÍ",
-      "NEZABEZPEČÍ"
-    ],
-    "correctAnswer": "NEZABEZPEČÍ",
-    "explanation": "Povědomí o zachování textové vrstvy v needitovatelných formátech (PDF text lze zkopírovat).",
-    "images": [],
-    "domain": "Bezpečnost a soukromí"
-  },
-  {
     "id": 29,
     "module": "IT Fitness",
     "theme": "Citlivé údaje",
@@ -546,26 +252,6 @@ export const QUESTIONS_DATA: Question[] = [
     "correctAnswer": "ZABEZPEČÍ",
     "explanation": "Korektní sanitizace a anonymizace dat před distribucí třetím stranám.",
     "images": [],
-    "domain": "Bezpečnost a soukromí"
-  },
-  {
-    "id": 30,
-    "module": "IT Fitness",
-    "theme": "Nastavení prohlížeče",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Markovi se zobrazilo legitimní bezpečnostní upozornění o napadení počítače.\"",
-    "scenario": "Marek narazil na podvodné hlášení v prohlížeči (scareware) a měnil nastavení certifikátů a HTTPS.",
-    "externalUrl": "https://www.microsoft.com/cs-cz/edge/features/scareware-blocker?form=MT0160",
-    "externalUrlLabel": "Otevřít článek o Scareware blocker",
-    "type": "true_false",
-    "options": [
-      "PRAVDA",
-      "NEPRAVDA"
-    ],
-    "correctAnswer": "NEPRAVDA",
-    "explanation": "Rozpoznání techniky scareware (falešné vyskakovací okno imitující systémový antivirus).",
-    "images": [
-      "./images/img-029.png"
-    ],
     "domain": "Bezpečnost a soukromí"
   },
   {
@@ -585,40 +271,6 @@ export const QUESTIONS_DATA: Question[] = [
     ],
     "correctAnswer": "Přístupový klíč je odolnější vůči phishingu než heslo.",
     "explanation": "Znalost moderní bezheslové autentizace dle FIDO2/WebAuthn standardu.",
-    "images": [],
-    "domain": "Bezpečnost a soukromí"
-  },
-  {
-    "id": 32,
-    "module": "IT Fitness",
-    "theme": "USB nabíjení (Juice jacking)",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Chceme-li předejít riziku, stačí zůstat po celou dobu nabíjení u veřejné USB nabíječky.\"",
-    "scenario": "Článek o rizicích veřejných USB dobíjecích terminálů a juice jackingu.",
-    "externalUrl": "https://mobilmania.zive.cz/clanky/vypada-jako-pomocnik-ale-muze-to-byt-past-nepodcenujte-riziko-verejnych-usb-nabijecek/sc-3-a-1364216/default.aspx",
-    "externalUrlLabel": "Přečíst článek o USB nabíječkách",
-    "type": "true_false",
-    "options": [
-      "PRAVDA",
-      "NEPRAVDA"
-    ],
-    "correctAnswer": "NEPRAVDA",
-    "explanation": "Pochopení mechaniky přenosu dat po USB pinech nezávisle na fyzické přítomnosti.",
-    "images": [],
-    "domain": "Bezpečnost a soukromí"
-  },
-  {
-    "id": 33,
-    "module": "IT Fitness",
-    "theme": "USB nabíjení (Juice jacking)",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Bezdrátové způsoby nabíjení na veřejných bezdrátových nabíječkách jsou vždy bezpečné a nemusíme se obávat žádného rizika.\"",
-    "scenario": "Rizika bezdrátového nabíjení (indukční podložky, přehřátí, firmware).",
-    "type": "true_false",
-    "options": [
-      "PRAVDA",
-      "NEPRAVDA"
-    ],
-    "correctAnswer": "NEPRAVDA",
-    "explanation": "Kritický pohled na hardwarová a přepěťová rizika veřejné infrastruktury.",
     "images": [],
     "domain": "Bezpečnost a soukromí"
   },
@@ -655,74 +307,6 @@ export const QUESTIONS_DATA: Question[] = [
     "domain": "Digitální nástroje"
   },
   {
-    "id": 36,
-    "module": "IT Fitness",
-    "theme": "Informační leták (Docx)",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Ve třetím sloupci se nachází odrážkový seznam (vytvořený příslušným nástrojem).\"",
-    "scenario": "Rozbor formátování seznamů vs. ručně psaných odrážek.",
-    "type": "true_false",
-    "options": [
-      "PRAVDA",
-      "NEPRAVDA"
-    ],
-    "correctAnswer": "NEPRAVDA",
-    "explanation": "Rozlišení systémového seznamu od ručně vepsaných symbolů/znaků.",
-    "images": [],
-    "domain": "Digitální nástroje"
-  },
-  {
-    "id": 37,
-    "module": "IT Fitness",
-    "theme": "Informační leták (Docx)",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Nadpis „Summary“ je ve všech sloupcích zarovnaný doleva.\"",
-    "scenario": "Zarovnání textových prvků ve sloupcové sazbě.",
-    "type": "true_false",
-    "options": [
-      "PRAVDA",
-      "NEPRAVDA"
-    ],
-    "correctAnswer": "NEPRAVDA",
-    "explanation": "Ověření formátování odstavců v tabulce.",
-    "images": [],
-    "domain": "Digitální nástroje"
-  },
-  {
-    "id": 38,
-    "module": "IT Fitness",
-    "theme": "Práce s databází (Netflix I.)",
-    "prompt": "Vytvořte žebříček pouze z titulů vydaných v roce 2020, seřaďte jej sestupně podle hodnocení na webu IMDb. Na kterém místě se v žebříčku umístil titul Lenox Hill?",
-    "scenario": "Datový soubor Netflix.xlsx z Kaggle.com (filmy a pořady, release year, imdb_score).",
-    "type": "single_choice",
-    "options": [
-      "na druhém",
-      "na třetím",
-      "na čtvrtém",
-      "na pátém"
-    ],
-    "correctAnswer": "na třetím",
-    "explanation": "Filtrování a víceúrovňové řazení v tabulkovém procesoru.",
-    "images": [],
-    "domain": "Digitální nástroje"
-  },
-  {
-    "id": 39,
-    "module": "IT Fitness",
-    "theme": "Práce s databází (Netflix II.)",
-    "prompt": "Určete na základě dat z tabulky Netflix, kolik obsahuje titulů vydaných v roce 2005.",
-    "scenario": "Agregace a podmíněné počítání záznamů splňujících rok 2005.",
-    "type": "single_choice",
-    "options": [
-      "29",
-      "31",
-      "41",
-      "44"
-    ],
-    "correctAnswer": "31",
-    "explanation": "Agregace a počítání záznamů splňujících kritérium (funkce COUNTIF).",
-    "images": [],
-    "domain": "Digitální nástroje"
-  },
-  {
     "id": 40,
     "module": "IT Fitness",
     "theme": "Sdílení v cloudu vs Příloha",
@@ -738,60 +322,6 @@ export const QUESTIONS_DATA: Question[] = [
     "images": [
       "./images/img-038.png"
     ],
-    "domain": "Digitální nástroje"
-  },
-  {
-    "id": 41,
-    "module": "IT Fitness",
-    "theme": "Sdílení v cloudu vs Příloha",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Pokud Lea pošle soubor jako sdílený odkaz a zruší k němu přístup pro příjemce, příjemce si ho může stále stáhnout.\"",
-    "scenario": "Správa a odebrání přístupových práv v cloudovém úložišti.",
-    "type": "true_false",
-    "options": [
-      "PRAVDA",
-      "NEPRAVDA"
-    ],
-    "correctAnswer": "NEPRAVDA",
-    "explanation": "Řízení přístupových práv v cloudových úložištích.",
-    "images": [
-      "./images/img-038.png"
-    ],
-    "domain": "Digitální nástroje"
-  },
-  {
-    "id": 42,
-    "module": "IT Fitness",
-    "theme": "Sdílení v cloudu vs Příloha",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Pokud Lea pošle soubor jako přílohu, příjemce může vidět všechny předchozí verze souboru, pokud je Lea nevymazala.\"",
-    "scenario": "Verzování a historie změn u e-mailové přílohy vs. cloudového dokumentu.",
-    "type": "true_false",
-    "options": [
-      "PRAVDA",
-      "NEPRAVDA"
-    ],
-    "correctAnswer": "NEPRAVDA",
-    "explanation": "Rozdíl mezi statickým exportem v příloze a cloudovým verzováním.",
-    "images": [
-      "./images/img-038.png"
-    ],
-    "domain": "Digitální nástroje"
-  },
-  {
-    "id": 43,
-    "module": "IT Fitness",
-    "theme": "Sociální sítě",
-    "prompt": "Jana si hledala na Instagramu profily zaměřené na vědecké informace. Který z profilů má nejvíce příspěvků?",
-    "scenario": "Porovnání vědeckých profilů: sciencemuseum, asapscience, mythbusters, explorist.",
-    "type": "single_choice",
-    "options": [
-      "sciencemuseum",
-      "asapscience",
-      "mythbusters",
-      "explorist"
-    ],
-    "correctAnswer": "sciencemuseum",
-    "explanation": "Vyhledání a porovnání metrik na veřejných sociálních profilech.",
-    "images": [],
     "domain": "Digitální nástroje"
   },
   {
@@ -813,71 +343,59 @@ export const QUESTIONS_DATA: Question[] = [
     "domain": "Digitální nástroje"
   },
   {
-    "id": 45,
-    "module": "IT Fitness",
-    "theme": "Sledování změn (Trip.docx)",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"V programu třetího dne, k textu «Musée d’Orsay» všichni tři napsali komentář nebo odpověděli na komentář.\"",
-    "scenario": "Revize komentářových vláken v dokumentu Trip.docx.",
-    "externalUrl": "https://docs.google.com/document/d/1FbcsMVMzeTEmj59Snmv_Ph9v10Z_pWHc/edit",
-    "externalUrlLabel": "Otevřít dokument Trip.docx na Google Drive",
-    "type": "true_false",
+    "id": 13,
+    "module": "Mediální gramotnost",
+    "theme": "Syntetický obraz (AI)",
+    "prompt": "Kdy a kde byl pořízen tento obrázek zasněžené dálnice se stojícími auty?",
+    "scenario": "Příspěvek na sociální síti tvrdící: \"Německo dnešních dnů a elektromobily...\".",
+    "type": "single_choice",
     "options": [
-      "PRAVDA",
-      "NEPRAVDA"
+      "v Německu v roce 2023, jak tvrdí autor příspěvku",
+      "v USA při sněhové bouři v roce 2011",
+      "nikde, obrázek je vygenerovaný umělou inteligencí",
+      "nikde, obrázek pochází z filmu"
     ],
-    "correctAnswer": "NEPRAVDA",
-    "explanation": "Audit komentářových vláken v revizním nástroji.",
-    "images": [],
-    "domain": "Digitální nástroje"
+    "correctAnswer": "nikde, obrázek je vygenerovaný umělou inteligencí",
+    "explanation": "Identifikace artefaktů generativních modelů (Midjourney/DALL-E) a ověření zprávy.",
+    "images": [
+      "./images/img-018.png"
+    ],
+    "domain": "Kritické využití AI"
   },
   {
-    "id": 46,
+    "id": 20,
     "module": "IT Fitness",
-    "theme": "Sledování změn (Trip.docx)",
-    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Na komentář k obědu v programu prvního dne odpověděl Jack až následující den.\"",
-    "scenario": "Analýza časových razítek v komentářích v dokumentu Trip.docx.",
-    "externalUrl": "https://docs.google.com/document/d/1FbcsMVMzeTEmj59Snmv_Ph9v10Z_pWHc/edit",
-    "externalUrlLabel": "Otevřít dokument Trip.docx na Google Drive",
+    "theme": "Trasa vlaku",
+    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Na mapě č. 2 na zakreslené trase vlaku EC 130 Bathory jsou zobrazena i města, ve kterých vlak nezastavuje.\"",
+    "scenario": "Monika nechala AI vygenerovat schématickou mapu tras vlaků IC 112 Silesia, RJ 272 Metropolitan, EC 102 Polonia a EC 130 Bathory.",
     "type": "true_false",
     "options": [
       "PRAVDA",
       "NEPRAVDA"
     ],
     "correctAnswer": "PRAVDA",
-    "explanation": "Analýza časových razítek v revizích dokumentu.",
-    "images": [],
-    "domain": "Digitální nástroje"
+    "explanation": "Kritické posouzení AI generované schématické mapy vůči reálnému jízdnímu řádu.",
+    "images": [
+      "./images/img-024.png"
+    ],
+    "domain": "Kritické využití AI"
+  },
+  {
+    "id": 22,
+    "module": "IT Fitness",
+    "theme": "Trasa vlaku",
+    "prompt": "Rozhodněte o pravdivosti tvrzení: \"Mapa č. 2 neodpovídá skutečné geografické orientaci – například Budapešť se na skutečné mapě nachází spíše jihovýchodním směrem od Bratislavy.\"",
+    "scenario": "Posouzení geografických relací a halucinací generativních modelů.",
+    "type": "true_false",
+    "options": [
+      "PRAVDA",
+      "NEPRAVDA"
+    ],
+    "correctAnswer": "PRAVDA",
+    "explanation": "Detekce prostorových chyb a halucinací generativních modelů.",
+    "images": [
+      "./images/img-024.png"
+    ],
+    "domain": "Kritické využití AI"
   }
 ];
-
-/**
- * Získá standardní reprezentativní sadu 20 položek
- */
-export function getStandard20Questions(): Question[] {
-  return DEFAULT_20_QUESTION_IDS.map((id) => QUESTIONS_DATA.find((q) => q.id === id)!);
-}
-
-/**
- * Vygeneruje randomizovanou sadu 20 položek přesně v kvótách:
- * 5 z Mediálního obsahu, 4 z Ověřování informací, 5 z Bezpečnosti a soukromí, 3 z Digitálních nástrojů, 3 z Kritického AI
- */
-export function getRandomized20Questions(): Question[] {
-  const result: Question[] = [];
-
-  const domains: DiagnosticDomain[] = [
-    'Mediální obsah',
-    'Ověřování informací',
-    'Bezpečnost a soukromí',
-    'Digitální nástroje',
-    'Kritické využití AI',
-  ];
-
-  for (const domain of domains) {
-    const quota = DOMAIN_QUOTAS[domain];
-    const pool = QUESTIONS_DATA.filter((q) => q.domain === domain);
-    const shuffled = [...pool].sort(() => 0.5 - Math.random());
-    result.push(...shuffled.slice(0, quota));
-  }
-
-  return result;
-}

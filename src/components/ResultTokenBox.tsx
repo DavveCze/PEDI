@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Check, Download, ShieldCheck, KeyRound, Sparkles } from 'lucide-react';
+import { Copy, Check, Download, ShieldCheck } from 'lucide-react';
 import { QuizSubmission } from '../types/quiz';
 
 interface ResultTokenBoxProps {
@@ -15,7 +15,6 @@ export const ResultTokenBox: React.FC<ResultTokenBoxProps> = ({ submission }) =>
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
-      // Fallback
       const textArea = document.createElement('textarea');
       textArea.value = submission.encryptedToken;
       document.body.appendChild(textArea);
@@ -55,47 +54,38 @@ export const ResultTokenBox: React.FC<ResultTokenBoxProps> = ({ submission }) =>
   };
 
   return (
-    <div className="bg-gradient-to-br from-indigo-900 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-2xl relative overflow-hidden">
-      <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="relative z-10 space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <KeyRound className="w-5 h-5 text-indigo-400" />
-            <h3 className="text-base sm:text-lg font-bold tracking-tight">
-              Šifrovaný kód výsledku pro odevzdání
-            </h3>
-          </div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-medium">
+    <div className="bg-slate-900 rounded-2xl p-5 sm:p-6 text-white border border-slate-800">
+      <div className="space-y-3.5">
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="text-sm sm:text-base font-bold text-white">
+            Šifrovaný kód výsledku pro odevzdání
+          </h3>
+          <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400 font-semibold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">
             <ShieldCheck className="w-3.5 h-3.5" />
-            HMAC Kontrolní podpis OK
+            HMAC SHA-256
           </span>
         </div>
 
-        <p className="text-xs sm:text-sm text-indigo-200/90 leading-relaxed">
-          Tento kód obsahuje vaše anonymizované odpovědi, skóre a čas vyřešení, zabezpečené proti pozměnění. Zkopírujte ho a zašlete autorům výzkumu / vložte do školního systému.
+        <p className="text-xs text-slate-300 leading-relaxed">
+          Tento kód obsahuje vaše anonymizované odpovědi a celkové skóre. Zkopírujte ho a zašlete vyučujícímu nebo vložte do odevzdávárny.
         </p>
 
-        {/* Textarea s tokenem */}
-        <div className="relative">
-          <textarea
-            readOnly
-            value={submission.encryptedToken}
-            rows={3}
-            className="w-full bg-slate-950/70 text-indigo-200 font-mono text-xs p-3.5 rounded-2xl border border-indigo-500/30 focus:outline-none select-all resize-none shadow-inner"
-            onClick={(e) => (e.target as HTMLTextAreaElement).select()}
-          />
-        </div>
+        <textarea
+          readOnly
+          value={submission.encryptedToken}
+          rows={3}
+          className="w-full bg-slate-950 text-slate-200 font-mono text-xs p-3 rounded-xl border border-slate-700 select-all resize-none focus:outline-none"
+          onClick={(e) => (e.target as HTMLTextAreaElement).select()}
+        />
 
-        {/* Tlačítka pro akci */}
-        <div className="flex flex-wrap items-center gap-3 pt-1">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
           <button
             type="button"
             onClick={handleCopy}
-            className={`flex-1 min-w-[200px] py-3 px-5 rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md ${
+            className={`min-h-[48px] flex-1 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
               copied
-                ? 'bg-emerald-500 text-white shadow-emerald-500/20'
-                : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/30'
+                ? 'bg-emerald-600 text-white'
+                : 'bg-blue-600 hover:bg-blue-500 text-white'
             }`}
           >
             {copied ? (
@@ -114,17 +104,15 @@ export const ResultTokenBox: React.FC<ResultTokenBoxProps> = ({ submission }) =>
           <button
             type="button"
             onClick={handleDownload}
-            className="py-3 px-5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-white/20 transition-all flex items-center justify-center gap-2"
-            title="Stáhnout zálohu výsledku ve formátu JSON"
+            className="min-h-[48px] py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-semibold border border-slate-700 transition-colors flex items-center justify-center gap-2"
           >
             <Download className="w-4 h-4" />
-            <span>Stáhnout soubor (.json)</span>
+            <span>Stáhnout (.json)</span>
           </button>
         </div>
 
-        <div className="text-[11px] text-indigo-300/70 flex items-center gap-1.5 pt-1">
-          <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-          <span>ID respondenta: <strong>{submission.respondent.respondentId}</strong> • Třída: {submission.respondent.group}</span>
+        <div className="text-[11px] text-slate-400">
+          ID respondenta: <strong className="text-white font-mono">{submission.respondent.respondentId}</strong> • Třída: {submission.respondent.group}
         </div>
       </div>
     </div>

@@ -9,14 +9,14 @@ import {
   CheckCircle2,
   Users,
   Award,
-  Sparkles,
-  BarChart3,
 } from 'lucide-react';
 import { decodeQuizResult, exportResultsToCsv } from '../utils/crypto';
+import { Question } from '../types/quiz';
 
 interface ResearchHubModalProps {
   isOpen: boolean;
   onClose: () => void;
+  questions?: Question[];
 }
 
 export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
@@ -73,13 +73,13 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
     }
 
     setImportStatus(
-      `Načteno: ${successCount} nových validních výsledků. Chybných/duplicitních: ${errorCount}.`
+      `Načteno: ${successCount} nových validních kódů. Chybných/duplicitních: ${errorCount}.`
     );
     setTokensInput('');
   };
 
   const handleClearAll = () => {
-    if (window.confirm('Opravdu si přejete smazat všechny načtené výzkumné výsledky z tohoto zařízení?')) {
+    if (window.confirm('Opravdu chcete smazat všechny načtené výzkumné výsledky z tohoto zařízení?')) {
       setSubmissions([]);
       setImportStatus('Databáze vymazána.');
     }
@@ -108,7 +108,6 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
         grp: '4.A',
         gen: 'female',
         age: 19,
-        mode: 'standard_20',
         qids: [1, 2, 4, 8, 15, 3, 7, 9, 10, 6, 19, 29, 31, 34, 35, 40, 44, 13, 20, 22],
         ts: new Date().toISOString(),
         dur: 620,
@@ -130,7 +129,6 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
         grp: '4.A',
         gen: 'male',
         age: 19,
-        mode: 'standard_20',
         qids: [1, 2, 4, 8, 15, 3, 7, 9, 10, 6, 19, 29, 31, 34, 35, 40, 44, 13, 20, 22],
         ts: new Date().toISOString(),
         dur: 710,
@@ -152,8 +150,7 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
         grp: '4.B',
         gen: 'female',
         age: 19,
-        mode: 'random_20',
-        qids: [1, 2, 4, 8, 14, 5, 7, 9, 11, 6, 19, 27, 31, 32, 36, 41, 45, 18, 20, 21],
+        qids: [1, 2, 4, 8, 15, 3, 7, 9, 10, 6, 19, 29, 31, 34, 35, 40, 44, 13, 20, 22],
         ts: new Date().toISOString(),
         dur: 590,
         sc: 16,
@@ -170,120 +167,113 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
       },
     ];
     setSubmissions((prev) => [...prev, ...demoSubmissions]);
-    setImportStatus('Vloženy 3 anonymní ukázkové záznamy (20 položek) pro demonstraci.');
+    setImportStatus('Vloženy 3 anonymní ukázkové záznamy pro otestování analytiky.');
   };
 
   const totalN = submissions.length;
   const avgPct = totalN > 0 ? (submissions.reduce((acc, s) => acc + (s.pct || 0), 0) / totalN).toFixed(1) : '0';
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="relative w-full max-w-5xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+      <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-xl border border-slate-300 overflow-hidden my-6 flex flex-col max-h-[92vh]">
         {/* Záhlaví panelu */}
-        <div className="bg-slate-900 text-white p-6 sm:p-7 flex items-center justify-between border-b border-slate-800">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white">
-              <Database className="w-5 h-5" />
-            </div>
+        <div className="bg-slate-900 text-white p-4 sm:p-5 flex items-center justify-between border-b border-slate-800">
+          <div className="flex items-center gap-2.5">
+            <Database className="w-5 h-5 text-slate-300" />
             <div>
-              <h2 className="text-xl font-bold tracking-tight">
+              <h2 className="text-base sm:text-lg font-bold tracking-tight">
                 Výzkumný analytický panel (Research Hub)
               </h2>
-              <p className="text-xs text-slate-400">
-                Agregace anonymizovaných kódů a 5 diagnostických oblastí pro seminární práci
+              <p className="text-[11px] text-slate-400">
+                Agregace anonymních výsledků pro seminární práci z pedagogické diagnostiky
               </p>
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center transition-colors"
+            className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+            aria-label="Zavřít"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Hlavní obsah */}
-        <div className="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1">
+        <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1 text-xs">
           {/* Metriky souhrnu */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-100">
-              <div className="flex items-center gap-2 text-xs font-semibold text-indigo-700 mb-1">
-                <Users className="w-4 h-4" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+              <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 mb-0.5">
+                <Users className="w-3.5 h-3.5 text-slate-500" />
                 <span>Velikost vzorku (N)</span>
               </div>
-              <div className="text-2xl font-black text-indigo-950">{totalN} studentů</div>
+              <div className="text-xl font-bold text-slate-900">{totalN} studentů</div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
-              <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700 mb-1">
-                <Award className="w-4 h-4" />
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+              <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 mb-0.5">
+                <Award className="w-3.5 h-3.5 text-blue-700" />
                 <span>Průměrná úspěšnost</span>
               </div>
-              <div className="text-2xl font-black text-emerald-950">{avgPct} %</div>
+              <div className="text-xl font-bold text-slate-900">{avgPct} %</div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-purple-50 border border-purple-100 col-span-2 sm:col-span-1">
-              <div className="flex items-center gap-2 text-xs font-semibold text-purple-700 mb-1">
-                <BarChart3 className="w-4 h-4" />
-                <span>Oblasti diagnostiky</span>
-              </div>
-              <div className="text-sm font-bold text-purple-950">5 oblastí (5+4+5+3+3)</div>
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl col-span-2 sm:col-span-1">
+              <div className="text-[11px] font-semibold text-slate-600 mb-0.5">Diagnostické oblasti</div>
+              <div className="text-xs font-bold text-slate-900 mt-1">5 oblastí (20 úloh)</div>
             </div>
           </div>
 
-          {/* Vkládací formulář */}
-          <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+          {/* Vkládací pole pro kódy */}
+          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2.5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                <Plus className="w-3.5 h-3.5 text-indigo-600" />
-                Vložit kódy výsledků od studentů
+              <label className="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1">
+                <Plus className="w-3.5 h-3.5" />
+                Vložit kódy studentů
               </label>
               <button
                 type="button"
                 onClick={handleLoadDemoData}
-                className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold flex items-center gap-1"
+                className="text-[11px] text-blue-700 hover:text-blue-900 font-semibold"
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                Nahrát demo data (3 respondenti)
+                Vložit testovací data (3 respondenti)
               </button>
             </div>
 
             <textarea
               value={tokensInput}
               onChange={(e) => setTokensInput(e.target.value)}
-              placeholder="Sem vložte jeden nebo více kódů PEDI-RESULT-... (každý na nový řádek)"
+              placeholder="Vložte kódy PEDI-RESULT-... (každý na nový řádek)"
               rows={3}
-              className="w-full text-xs font-mono p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              className="w-full text-xs font-mono p-2.5 rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-1 focus:ring-blue-600"
             />
 
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <button
                 type="button"
                 onClick={handleImportTokens}
                 disabled={!tokensInput.trim()}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 text-white text-xs font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5"
+                className="px-3 py-1.5 bg-blue-700 hover:bg-blue-800 disabled:opacity-40 text-white font-semibold rounded-lg transition-colors flex items-center gap-1.5"
               >
-                <CheckCircle2 className="w-4 h-4" />
-                Dekódovat a přidat do databáze
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                Dekódovat a přidat
               </button>
 
               {importStatus && (
-                <div className="text-xs font-medium text-slate-600 flex items-center gap-1">
-                  <AlertCircle className="w-3.5 h-3.5 text-indigo-600" />
+                <div className="text-[11px] text-slate-600 flex items-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5 text-blue-600" />
                   {importStatus}
                 </div>
               )}
             </div>
           </div>
 
-          {/* Seznam načtených respondentů */}
-          <div className="space-y-3">
+          {/* Tabulka */}
+          <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <span>Načtení respondenti</span>
-                <span className="text-xs font-semibold px-2 py-0.5 bg-slate-100 text-slate-700 rounded-md">
-                  {submissions.length}
-                </span>
+              <h3 className="font-bold text-slate-900 text-xs">
+                Seznam načtených respondentů ({submissions.length})
               </h3>
 
               <div className="flex items-center gap-2">
@@ -291,61 +281,49 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
                   type="button"
                   onClick={handleExportCsv}
                   disabled={submissions.length === 0}
-                  className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-xs font-bold rounded-xl shadow-xs transition-colors flex items-center gap-1.5"
-                  title="Stáhnout kompletní dataset ve formátu CSV pro Excel / SPSS"
+                  className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 disabled:opacity-40 text-white font-semibold rounded-lg flex items-center gap-1.5"
+                  title="Export do CSV (Excel)"
                 >
-                  <FileSpreadsheet className="w-4 h-4" />
-                  Exportovat do CSV (Excel)
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                  Exportovat do CSV
                 </button>
 
                 <button
                   type="button"
                   onClick={handleClearAll}
                   disabled={submissions.length === 0}
-                  className="px-3 py-1.5 text-rose-600 hover:bg-rose-50 disabled:opacity-40 text-xs font-semibold rounded-xl border border-rose-200 transition-colors flex items-center gap-1"
+                  className="px-2.5 py-1.5 text-rose-700 hover:bg-rose-50 disabled:opacity-40 font-semibold rounded-lg border border-rose-200 flex items-center gap-1"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
-                  Smazat vše
+                  Smazat
                 </button>
               </div>
             </div>
 
             {submissions.length === 0 ? (
-              <div className="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-slate-400 text-xs">
-                Zatím nebyly načteny žádné výsledky. Vložte kód od studenta výše nebo klikněte na „Nahrát demo data“.
+              <div className="text-center py-8 bg-slate-50 rounded-xl border border-dashed border-slate-300 text-slate-400">
+                Zatím nebyly načteny žádné výsledky.
               </div>
             ) : (
-              <div className="border border-slate-200 rounded-2xl overflow-hidden overflow-x-auto shadow-xs">
-                <table className="w-full text-left text-xs text-slate-600 divide-y divide-slate-200">
-                  <thead className="bg-slate-50 text-slate-700 font-bold uppercase tracking-wider text-[10px]">
+              <div className="border border-slate-200 rounded-xl overflow-hidden overflow-x-auto">
+                <table className="w-full text-left text-xs divide-y divide-slate-200">
+                  <thead className="bg-slate-100 text-slate-700 font-semibold uppercase tracking-wider text-[10px]">
                     <tr>
-                      <th className="px-3 py-3">ID Respondenta</th>
-                      <th className="px-3 py-3">Třída</th>
-                      <th className="px-3 py-3">Režim</th>
-                      <th className="px-3 py-3">Položek</th>
-                      <th className="px-3 py-3">Čas</th>
-                      <th className="px-3 py-3">Skóre</th>
-                      <th className="px-3 py-3">Úspěšnost</th>
+                      <th className="px-3 py-2">ID Respondenta</th>
+                      <th className="px-3 py-2">Třída</th>
+                      <th className="px-3 py-2">Čas</th>
+                      <th className="px-3 py-2">Skóre</th>
+                      <th className="px-3 py-2">Úspěšnost</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 bg-white">
                     {submissions.map((sub, idx) => (
-                      <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                        <td className="px-3 py-2.5 font-mono font-bold text-slate-900">{sub.rid}</td>
-                        <td className="px-3 py-2.5">{sub.grp || sub.grd}</td>
-                        <td className="px-3 py-2.5">
-                          <span className="px-1.5 py-0.5 rounded text-[10px] bg-slate-100 text-slate-700 font-medium">
-                            {sub.mode === 'random_20' ? 'Random 20' : sub.mode === 'full_46' ? 'Plný 46' : 'Standard 20'}
-                          </span>
-                        </td>
-                        <td className="px-3 py-2.5">{sub.qids?.length || sub.max || 20}</td>
-                        <td className="px-3 py-2.5">{Math.round((sub.dur || 0) / 60)} min</td>
-                        <td className="px-3 py-2.5 font-bold text-slate-900">{sub.sc} / {sub.max || 20}</td>
-                        <td className="px-3 py-2.5">
-                          <span className="px-2 py-0.5 rounded-md font-semibold bg-indigo-50 text-indigo-700">
-                            {sub.pct} %
-                          </span>
-                        </td>
+                      <tr key={idx} className="hover:bg-slate-50">
+                        <td className="px-3 py-2 font-mono font-bold text-slate-900">{sub.rid}</td>
+                        <td className="px-3 py-2">{sub.grp || sub.grd}</td>
+                        <td className="px-3 py-2">{Math.round((sub.dur || 0) / 60)} min</td>
+                        <td className="px-3 py-2 font-bold text-slate-900">{sub.sc} / {sub.max || 20}</td>
+                        <td className="px-3 py-2 font-semibold text-blue-700">{sub.pct} %</td>
                       </tr>
                     ))}
                   </tbody>
@@ -356,13 +334,14 @@ export const ResearchHubModal: React.FC<ResearchHubModalProps> = ({
         </div>
 
         {/* Spodní lišta */}
-        <div className="p-4 sm:p-5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-          <span>Standard pro pedagogickou diagnostiku 2026 • 5 oblastí</span>
+        <div className="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+          <span>Metodika pedagogické diagnostiky 2026</span>
           <button
+            type="button"
             onClick={onClose}
-            className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl font-semibold transition-colors"
+            className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg font-semibold transition-colors"
           >
-            Zavřít panel
+            Zavřít
           </button>
         </div>
       </div>
